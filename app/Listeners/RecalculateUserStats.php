@@ -5,8 +5,9 @@ namespace App\Listeners;
 use App\Events\ResultImported;
 use App\Models\Prediction;
 use App\Models\UserStat;
+use Illuminate\Contracts\Queue\ShouldQueue;
 
-class RecalculateUserStats
+class RecalculateUserStats implements ShouldQueue
 {
     public function handle(ResultImported $event): void
     {

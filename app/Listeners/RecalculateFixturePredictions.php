@@ -5,9 +5,10 @@ namespace App\Listeners;
 use App\Events\ResultImported;
 use App\Models\Prediction;
 use App\Services\Scoring\FixturePredictionScorer;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Database\Eloquent\Collection;
 
-class RecalculateFixturePredictions
+class RecalculateFixturePredictions implements ShouldQueue
 {
     public function __construct(private readonly FixturePredictionScorer $scorer) {}
 
