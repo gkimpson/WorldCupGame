@@ -1,0 +1,73 @@
+<?php
+
+use App\Enums\FixtureStatus;
+use App\Events\ResultImported;
+use App\Models\Fixture;
+use App\Models\Prediction;
+
+it('awards 3 points for an exact score prediction', function () {
+    $fixture = Fixture::factory()->completed()->create([
+        'home_score' => 2,
+        'away_score' => 1,
+    ]);
+
+    $prediction = Prediction::factory()->create([
+        'fixture_id' => $fixture->id,
+        'home_score' => 2,
+        'away_score' => 1,
+    ]);
+
+    event(new ResultImported($fixture));
+
+    expect($prediction->fresh()->points)->toBe(3);
+});
+
+it('awards 1 point for a correct outcome prediction', function () {
+    $fixture = Fixture::factory()->completed()->create([
+        'home_score' => 2,
+        'away_score' => 1,
+    ]);
+
+    $prediction = Prediction::factory()->create([
+        'fixture_id' => $fixture->id,
+        'home_score' => 3,
+        'away_score' => 0,
+    ]);
+
+    event(new ResultImported($fixture));
+
+    expect($prediction->fresh()->points)->toBe(1);
+});
+
+it('awards 0 points for a wrong prediction', function () {
+    $fixture = Fixture::factory()->completed()->create([
+        'home_score' => 2,
+        'away_score' => 1,
+    ]);
+
+    $prediction = Prediction::factory()->create([
+        'fixture_id' => $fixture->id,
+        'home_score' => 0,
+        'away_score' => 2,
+    ]);
+
+    event(new ResultImported($fixture));
+
+    expect($prediction->fresh()->points)->toBe(0);
+});
+
+it('leaves points null when the fixture is not yet completed', function () {
+    $fixture = Fixture::factory()->create([
+        'status' => FixtureStatus::Scheduled,
+    ]);
+
+    $prediction = Prediction::factory()->create([
+        'fixture_id' => $fixture->id,
+        'home_score' => 1,
+        'away_score' => 0,
+    ]);
+
+    event(new ResultImported($fixture));
+
+    expect($prediction->fresh()->points)->toBeNull();
+});
