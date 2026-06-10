@@ -58,6 +58,11 @@ There is no `npm test`; all tests are PHP/Pest. The DB is **MySQL** (`DB_CONNECT
 
 - **Flowbite** full component reference: `.ai/flowbite-llms-full.txt` (2.7MB — read it on demand for fallback work, never inline it here). Covers Getting started/config, Components (Accordion, Modal, Drawer, Datepicker, Tables, Tabs, Toast, Carousel, Sidebar, etc.), Forms (inputs, select, file, toggle, range, floating label), Typography, and Plugins (Charts, Datatables, WYSIWYG).
 
+## Data sources
+
+- **OpenFootball 2026 World Cup JSON**: https://github.com/openfootball/worldcup.json/tree/master/2026 — open source JSON data for 2026 groups, tournament fixtures, qualification playoffs, stadiums, and teams. Use as a reference/import source for fixture and team data, but validate against official/provider data before treating it as canonical.
+- **Local 2026 source file**: `world-cup_2026.json` at the repository root. Prefer this local file when building fixture importers or seed data so imports are reproducible.
+
 <laravel-boost-guidelines>
 === foundation rules ===
 
