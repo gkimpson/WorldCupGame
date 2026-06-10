@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('fixture_id')->constrained()->cascadeOnDelete();
             $table->unsignedTinyInteger('home_score');
             $table->unsignedTinyInteger('away_score');
-            $table->unsignedTinyInteger('points')->nullable();
+            $table->unsignedSmallInteger('points')->nullable();
             $table->timestamps();
 
             $table->unique(['user_id', 'fixture_id']);

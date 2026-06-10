@@ -23,6 +23,9 @@ class Prediction extends Model
     /** @use HasFactory<PredictionFactory> */
     use HasFactory, HasUlids;
 
+    /**
+     * @return array<string, string>
+     */
     protected function casts(): array
     {
         return [
