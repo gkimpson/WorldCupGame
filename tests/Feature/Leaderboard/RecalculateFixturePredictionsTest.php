@@ -11,7 +11,7 @@ it('awards 3 points for an exact score prediction', function () {
         'away_score' => 1,
     ]);
 
-    $prediction = Prediction::factory()->create([
+    $prediction = Prediction::factory()->withPoints(99)->create([
         'fixture_id' => $fixture->id,
         'home_score' => 2,
         'away_score' => 1,
@@ -28,7 +28,7 @@ it('awards 1 point for a correct outcome prediction', function () {
         'away_score' => 1,
     ]);
 
-    $prediction = Prediction::factory()->create([
+    $prediction = Prediction::factory()->withPoints(99)->create([
         'fixture_id' => $fixture->id,
         'home_score' => 3,
         'away_score' => 0,
@@ -45,7 +45,7 @@ it('awards 0 points for a wrong prediction', function () {
         'away_score' => 1,
     ]);
 
-    $prediction = Prediction::factory()->create([
+    $prediction = Prediction::factory()->withPoints(99)->create([
         'fixture_id' => $fixture->id,
         'home_score' => 0,
         'away_score' => 2,
