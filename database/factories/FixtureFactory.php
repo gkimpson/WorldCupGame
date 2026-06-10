@@ -1,0 +1,75 @@
+<?php
+
+namespace Database\Factories;
+
+use App\Enums\FixtureStage;
+use App\Enums\FixtureStatus;
+use App\Models\Fixture;
+use App\Models\Team;
+use Illuminate\Database\Eloquent\Factories\Factory;
+
+/**
+ * @extends Factory<Fixture>
+ */
+class FixtureFactory extends Factory
+{
+    /**
+     * Define the model's default state.
+     *
+     * @return array<string, mixed>
+     */
+    public function definition(): array
+    {
+        return [
+            'home_team_id' => Team::factory(),
+            'away_team_id' => Team::factory(),
+            'home_team_placeholder' => null,
+            'away_team_placeholder' => null,
+            'stage' => FixtureStage::GroupStage,
+            'group' => fake()->randomElement(['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L']),
+            'match_number' => null,
+            'venue' => fake()->company().' Stadium',
+            'city' => fake()->city(),
+            'scheduled_at' => fake()->dateTimeBetween('2026-06-11', '2026-07-19'),
+            'status' => FixtureStatus::Scheduled,
+            'home_score' => null,
+            'away_score' => null,
+            'home_score_aet' => null,
+            'away_score_aet' => null,
+            'home_score_pens' => null,
+            'away_score_pens' => null,
+        ];
+    }
+
+    /**
+     * Indicate that the fixture has been completed with a result.
+     */
+    public function completed(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'status' => FixtureStatus::Completed,
+            'home_score' => fake()->numberBetween(0, 5),
+            'away_score' => fake()->numberBetween(0, 5),
+        ]);
+    }
+
+    /**
+     * Indicate that the fixture is a knockout match with unknown teams.
+     */
+    public function knockout(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'home_team_id' => null,
+            'away_team_id' => null,
+            'home_team_placeholder' => 'TBD',
+            'away_team_placeholder' => 'TBD',
+            'stage' => fake()->randomElement([
+                FixtureStage::RoundOf32,
+                FixtureStage::RoundOf16,
+                FixtureStage::QuarterFinal,
+                FixtureStage::SemiFinal,
+            ]),
+            'group' => null,
+        ]);
+    }
+}
