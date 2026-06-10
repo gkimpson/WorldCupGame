@@ -1,8 +1,11 @@
 <?php
 
+use App\Livewire\Leaderboard\GlobalLeaderboard;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'welcome')->name('home');
+
+Route::livewire('/leaderboard', GlobalLeaderboard::class)->name('leaderboard.global');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::view('dashboard', 'dashboard')->name('dashboard');
