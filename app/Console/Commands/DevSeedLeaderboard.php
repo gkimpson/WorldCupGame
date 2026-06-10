@@ -134,7 +134,7 @@ class DevSeedLeaderboard extends Command
                 (string) ($i + 1),
                 $stat->user->name,
                 (string) $stat->total_points,
-                $stat->predictions_made.' / 72',
+                $stat->predictions_made.' / 104',
             ]);
 
         $this->table(['#', 'Player', 'Points', 'Scored'], $entries);
