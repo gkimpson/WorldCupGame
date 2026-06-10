@@ -15,7 +15,7 @@
                     <flux:table.cell>{{ $entry['rank'] }}</flux:table.cell>
                     <flux:table.cell>{{ $entry['name'] }}</flux:table.cell>
                     <flux:table.cell>{{ $entry['total_points'] }}</flux:table.cell>
-                    <flux:table.cell>{{ $entry['predictions_made'] }} / 104</flux:table.cell>
+                    <flux:table.cell>{{ $entry['predictions_made'] }} / {{ \App\Models\Fixture::TOTAL_WORLD_CUP_MATCHES }}</flux:table.cell>
                 </flux:table.row>
             @empty
                 <flux:table.row>
@@ -38,7 +38,7 @@
                             <flux:badge class="ml-2" size="sm" color="amber">You</flux:badge>
                         </flux:table.cell>
                         <flux:table.cell>{{ $pinnedEntry['total_points'] }}</flux:table.cell>
-                        <flux:table.cell>{{ $pinnedEntry['predictions_made'] }} / 104</flux:table.cell>
+                        <flux:table.cell>{{ $pinnedEntry['predictions_made'] }} / {{ \App\Models\Fixture::TOTAL_WORLD_CUP_MATCHES }}</flux:table.cell>
                     </flux:table.row>
                 </flux:table.rows>
             </flux:table>

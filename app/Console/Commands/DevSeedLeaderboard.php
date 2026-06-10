@@ -134,7 +134,7 @@ class DevSeedLeaderboard extends Command
                 (string) ($i + 1),
                 $stat->user->name,
                 (string) $stat->total_points,
-                $stat->predictions_made.' / 104',
+                $stat->predictions_made.' / '.Fixture::TOTAL_WORLD_CUP_MATCHES,
             ]);
 
         $this->table(['#', 'Player', 'Points', 'Scored'], $entries);

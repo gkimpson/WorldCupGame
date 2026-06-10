@@ -42,6 +42,8 @@ use Illuminate\Support\Carbon;
 ])]
 class Fixture extends Model
 {
+    public const TOTAL_WORLD_CUP_MATCHES = 104;
+
     /** @use HasFactory<FixtureFactory> */
     use HasFactory;
 
