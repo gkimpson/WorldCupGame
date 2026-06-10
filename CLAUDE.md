@@ -1,3 +1,63 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## Project
+
+**World Cup 104** — a match-prediction competition platform. Users predict all 104 World Cup matches plus season-long outcomes, results are imported from data providers, a scoring engine awards points, and users compete on multiple leaderboards (global, league, accuracy, perfect-104) with a heavy gamification layer (titles, streaks, trophies, Hall of Fame, share cards). See `PRD.md` for full feature scope.
+
+**Stack source of truth is `composer.json`, not `PRD.md`.** The PRD lists an aspirational/outdated stack (Laravel 12, Livewire 3, Flowbite, MySQL+Redis+Horizon). What is actually installed: **PHP 8.3, Laravel 13, Livewire 4, Flux UI v2 (free), Filament v5, Fortify, spatie/laravel-permission v8, Pest 4, Larastan 3, Tailwind v4.** Redis/Horizon/Reverb are *not* installed yet — add them only when a task explicitly needs them. Treat the PRD as feature/scope guidance, build to the installed versions.
+
+The codebase is built on the **Laravel Livewire starter kit**; most app code beyond auth/settings is still to be written.
+
+## Commands
+
+```bash
+composer dev          # Run everything: serve + queue worker + pail logs + vite (concurrently)
+composer test         # Full gate: config:clear, pint --test, phpstan, then artisan test
+composer lint         # pint --parallel (auto-fix)
+composer types:check  # phpstan analyse (larastan)
+npm run dev           # Vite dev server only
+npm run build         # Production asset build
+
+php artisan test --compact --filter=testName   # Run a single test by name
+php artisan test --compact tests/Feature/X.php # Run a single test file
+vendor/bin/pint --dirty --format agent         # Format only changed files (run before finalizing PHP changes)
+```
+
+There is no `npm test`; all tests are PHP/Pest. The DB is **MySQL** (`DB_CONNECTION=mysql` in `.env`) served via Laravel Herd at `https://worldcup-104-0-0.test`.
+
+## Architecture
+
+**Authentication is Fortify-backed, not Livewire-component-based.** `FortifyServiceProvider` is the wiring hub: it registers user-creation/password-reset actions (`app/Actions/Fortify/`), points Fortify's view callbacks at Blade files under `resources/views/livewire/auth/`, and defines `login`/`two-factor` rate limiters. Those auth "livewire" views are plain **Flux/Blade forms that POST to Fortify routes** — they are not Livewire class components. Don't look for `app/Livewire/Auth/`; it doesn't exist.
+
+**Full-page Livewire (v4) components** are mounted with `Route::livewire(...)` (see `routes/settings.php`). Static pages use `Route::view`. `routes/web.php` requires `routes/settings.php`. Real Livewire class components live in `app/Livewire/` (currently only `Settings/` and `Actions/`).
+
+**Filament v5 admin panel** is at `/admin` (`app/Providers/Filament/AdminPanelProvider.php`), primary color Amber. It auto-discovers Resources, Pages, and Widgets from `app/Filament/` — that directory doesn't exist yet, so admin CRUD for the domain models will go there via `php artisan make:filament-resource`.
+
+**Authorization** uses `spatie/laravel-permission` v8 (roles/permissions tables migrated in `2026_06_10_...create_permission_tables.php`). The PRD also calls for Laravel Policies — combine spatie roles with policies as features land.
+
+**API responses**: `bootstrap/app.php` renders JSON for any `api/*` path, and `f9webltd/laravel-api-response-helpers` is available for consistent API response envelopes. There are no API routes yet.
+
+**Models use PHP 8 attribute config** (Laravel 13 style): `#[Fillable([...])]`, `#[Hidden([...])]`, and a `casts()` method rather than `$fillable`/`$hidden`/`$casts` properties — follow this pattern on `User` when creating new models.
+
+**Identifiers — ULID primary keys (locked-in convention).** All new domain models use **ULID** primary keys so the database PK is never an enumerable integer. ULIDs are time-ordered (index-friendly, like UUIDv7) but narrower (`CHAR(26)` vs UUID's `CHAR(36)`), which keeps every secondary index and FK smaller on the high-row tables (`predictions`, `activity_events`).
+
+- **Model:** add `use Illuminate\Database\Eloquent\Concerns\HasUlids;` — route-model binding then works automatically (the ULID *is* the route key; no `getRouteKeyName()` needed).
+- **Migration PK:** `$table->ulid('id')->primary();` (force ascii to keep indexes compact: append `->charset('ascii')`).
+- **Domain → domain FK:** `$table->foreignUlid('team_id')->constrained();`
+- **Domain → framework FK:** the starter-kit tables (`users`, `cache`, `jobs`, spatie `permission` tables) keep their **BIGINT** keys — do **not** convert them. So a reference to a user is still `$table->foreignId('user_id')->constrained();`, not `foreignUlid`. Only domain-to-domain references use ULID FKs.
+- **Never expose a sequential int** in URLs, API resources, share cards, or Filament — ULID PKs make this the default, keep it that way.
+- **Exception — reference data:** `teams` and `players` are non-sensitive BBC-imported reference data and use plain **BIGINT** PKs (`$table->id()`). They are not user-generated and carry no enumeration risk. New *user-facing/sensitive* models still default to ULID.
+
+**Tests**: Pest 4. `RefreshDatabase` is auto-applied to everything under `tests/Feature/` via `tests/Pest.php` (not to `tests/Unit/`). Most tests should be feature tests using model factories.
+
+## Reference docs
+
+**UI component policy: Flux first, Flowbite as fallback.** Build app UI with **Flux UI v2** (the installed kit) wherever a suitable component exists. Only reach for **Flowbite** when Flux has no equivalent or can't achieve the needed pattern (e.g. datatables, WYSIWYG, charts, complex marketing layouts). Flowbite is Tailwind + vanilla-JS data-attribute components, so when used it must be wired up manually (npm install + data attributes / init); it is not installed via npm yet.
+
+- **Flowbite** full component reference: `.ai/flowbite-llms-full.txt` (2.7MB — read it on demand for fallback work, never inline it here). Covers Getting started/config, Components (Accordion, Modal, Drawer, Datepicker, Tables, Tabs, Toast, Carousel, Sidebar, etc.), Forms (inputs, select, file, toggle, range, floating label), Typography, and Plugins (Charts, Datatables, WYSIWYG).
+
 <laravel-boost-guidelines>
 === foundation rules ===
 
@@ -10,6 +70,7 @@ The Laravel Boost guidelines are specifically curated by Laravel maintainers for
 This application is a Laravel application and its main Laravel ecosystems package & versions are below. You are an expert with them all. Ensure you abide by these specific packages & versions.
 
 - php - 8.3
+- filament/filament (FILAMENT) - v5
 - laravel/fortify (FORTIFY) - v1
 - laravel/framework (LARAVEL) - v13
 - laravel/prompts (PROMPTS) - v0
