@@ -40,7 +40,7 @@
         <flux:card class="flex flex-col gap-1 p-5">
             <flux:text class="text-sm text-zinc-500 dark:text-zinc-400">Predictions Made</flux:text>
             <div class="text-3xl font-bold text-zinc-900 dark:text-zinc-100">
-                {{ $predictionsMade }} <span class="text-lg font-normal text-zinc-400">/ {{ \App\Models\Fixture::TOTAL_WORLD_CUP_MATCHES }}</span>
+                {{ $predictionsMade }} <span class="text-lg font-normal text-zinc-400">/ {{ $totalMatches }}</span>
             </div>
         </flux:card>
     </div>

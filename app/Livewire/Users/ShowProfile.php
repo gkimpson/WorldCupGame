@@ -2,6 +2,8 @@
 
 namespace App\Livewire\Users;
 
+use App\Enums\FixtureStatus;
+use App\Models\Fixture;
 use App\Models\Prediction;
 use App\Models\User;
 use App\Models\UserStat;
@@ -48,6 +50,7 @@ class ShowProfile extends Component
 
         $this->recentResults = Prediction::where('predictions.user_id', $user->id)
             ->whereNotNull('predictions.points')
+            ->whereHas('fixture', fn ($q) => $q->where('status', FixtureStatus::Completed))
             ->join('fixtures', 'fixtures.id', '=', 'predictions.fixture_id')
             ->orderBy('fixtures.scheduled_at', 'desc')
             ->limit(10)
@@ -58,6 +61,8 @@ class ShowProfile extends Component
 
     public function render(): View
     {
-        return view('livewire.users.show-profile');
+        return view('livewire.users.show-profile', [
+            'totalMatches' => Fixture::TOTAL_WORLD_CUP_MATCHES,
+        ]);
     }
 }
