@@ -20,7 +20,7 @@ class LeagueFactory extends Factory
     {
         return [
             'owner_user_id' => User::factory(),
-            'name' => $this->faker->unique()->words(3, true),
+            'name' => fake()->unique()->words(3, true),
             'join_code' => League::generateJoinCode(),
         ];
     }

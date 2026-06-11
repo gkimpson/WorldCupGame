@@ -17,8 +17,8 @@ class PredictionFactory extends Factory
         return [
             'user_id' => User::factory(),
             'fixture_id' => Fixture::factory(),
-            'home_score' => $this->faker->numberBetween(0, 5),
-            'away_score' => $this->faker->numberBetween(0, 5),
+            'home_score' => fake()->numberBetween(0, 5),
+            'away_score' => fake()->numberBetween(0, 5),
             'points' => null,
         ];
     }
