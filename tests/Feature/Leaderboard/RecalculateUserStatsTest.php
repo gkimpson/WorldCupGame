@@ -92,6 +92,81 @@ it('updates an existing user_stat row on re-import', function () {
         ->and($stat->predictions_made)->toBe(1);
 });
 
+it('counts correct_outcomes for predictions with 1 or more points', function () {
+    $user = User::factory()->create();
+
+    // fixture1: home wins 2-0; prediction gets correct outcome (1 point) with 1-0
+    $fixture1 = Fixture::factory()->completed()->create(['home_score' => 2, 'away_score' => 0]);
+    // fixture2: exact score match 1-1 (3 points)
+    $fixture2 = Fixture::factory()->completed()->create(['home_score' => 1, 'away_score' => 1]);
+
+    Prediction::factory()->create([
+        'user_id' => $user->id,
+        'fixture_id' => $fixture1->id,
+        'home_score' => 1,
+        'away_score' => 0,
+    ]);
+    Prediction::factory()->create([
+        'user_id' => $user->id,
+        'fixture_id' => $fixture2->id,
+        'home_score' => 1,
+        'away_score' => 1,
+    ]);
+
+    event(new ResultImported($fixture1));
+    event(new ResultImported($fixture2));
+
+    $stat = UserStat::where('user_id', $user->id)->first();
+    expect($stat->correct_outcomes)->toBe(2);
+});
+
+it('counts exact_scores only for predictions with exactly 3 points', function () {
+    $user = User::factory()->create();
+
+    // fixture1: home wins 2-0; prediction gets correct outcome only (1 point)
+    $fixture1 = Fixture::factory()->completed()->create(['home_score' => 2, 'away_score' => 0]);
+    // fixture2: exact score match 1-1 (3 points)
+    $fixture2 = Fixture::factory()->completed()->create(['home_score' => 1, 'away_score' => 1]);
+
+    Prediction::factory()->create([
+        'user_id' => $user->id,
+        'fixture_id' => $fixture1->id,
+        'home_score' => 1,
+        'away_score' => 0,
+    ]);
+    Prediction::factory()->create([
+        'user_id' => $user->id,
+        'fixture_id' => $fixture2->id,
+        'home_score' => 1,
+        'away_score' => 1,
+    ]);
+
+    event(new ResultImported($fixture1));
+    event(new ResultImported($fixture2));
+
+    $stat = UserStat::where('user_id', $user->id)->first();
+    expect($stat->exact_scores)->toBe(1);
+});
+
+it('does not count zero point predictions toward correct_outcomes', function () {
+    $user = User::factory()->create();
+
+    // home wins 1-0; prediction is away win (0 points, incorrect outcome)
+    $fixture = Fixture::factory()->completed()->create(['home_score' => 1, 'away_score' => 0]);
+
+    Prediction::factory()->create([
+        'user_id' => $user->id,
+        'fixture_id' => $fixture->id,
+        'home_score' => 0,
+        'away_score' => 1,
+    ]);
+
+    event(new ResultImported($fixture));
+
+    $stat = UserStat::where('user_id', $user->id)->first();
+    expect($stat->correct_outcomes)->toBe(0);
+});
+
 it('only counts predictions with non-null points toward predictions_made', function () {
     $user = User::factory()->create();
 

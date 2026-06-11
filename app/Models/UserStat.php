@@ -15,10 +15,12 @@ use Illuminate\Support\Carbon;
  * @property int $user_id
  * @property int $total_points
  * @property int $predictions_made
+ * @property int $correct_outcomes
+ * @property int $exact_scores
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
-#[Fillable(['user_id', 'total_points', 'predictions_made'])]
+#[Fillable(['user_id', 'total_points', 'predictions_made', 'correct_outcomes', 'exact_scores'])]
 class UserStat extends Model
 {
     /** @use HasFactory<UserStatFactory> */
@@ -32,6 +34,8 @@ class UserStat extends Model
         return [
             'total_points' => 'integer',
             'predictions_made' => 'integer',
+            'correct_outcomes' => 'integer',
+            'exact_scores' => 'integer',
         ];
     }
 
