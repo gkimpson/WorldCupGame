@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\FixtureStage;
 use App\Enums\FixtureStatus;
+use Carbon\CarbonInterface;
 use Database\Factories\FixtureFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -88,5 +89,15 @@ class Fixture extends Model
     public function predictions(): HasMany
     {
         return $this->hasMany(Prediction::class);
+    }
+
+    public function scheduledAtIso8601(): ?string
+    {
+        return $this->scheduled_at?->toIso8601String();
+    }
+
+    public function scheduledAtForTimezone(string $timezone): ?CarbonInterface
+    {
+        return $this->scheduled_at?->copy()->setTimezone($timezone);
     }
 }

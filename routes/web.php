@@ -1,8 +1,9 @@
 <?php
 
-use App\Livewire\Leaderboard\GlobalLeaderboard;
+use App\Livewire\Dashboard;
 use App\Livewire\Fixtures\IndexFixtures;
 use App\Livewire\Fixtures\ShowFixture;
+use App\Livewire\Leaderboard\GlobalLeaderboard;
 use App\Livewire\League\MyLeagues;
 use App\Livewire\League\ShowLeague;
 use App\Livewire\Predictions\SubmitPredictions;
@@ -13,7 +14,7 @@ Route::view('/', 'welcome')->name('home');
 Route::livewire('/leaderboard', GlobalLeaderboard::class)->name('leaderboard.global');
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::view('dashboard', 'dashboard')->name('dashboard');
+    Route::livewire('dashboard', Dashboard::class)->name('dashboard');
     Route::livewire('fixtures', IndexFixtures::class)->name('fixtures.index');
     Route::livewire('fixtures/{fixture}', ShowFixture::class)->name('fixtures.show');
     Route::livewire('predictions', SubmitPredictions::class)->name('predictions.index');
