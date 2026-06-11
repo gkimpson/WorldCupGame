@@ -26,13 +26,20 @@
                             $homeName = $fixture->homeTeam?->name ?? $fixture->home_team_placeholder ?? __('TBD');
                             $awayName = $fixture->awayTeam?->name ?? $fixture->away_team_placeholder ?? __('TBD');
                             $hasResult = $fixture->home_score !== null && $fixture->away_score !== null;
+                            $userPrediction = $fixture->predictions->first();
+                            $pointsBadgeColor = match ($userPrediction?->points) {
+                                3 => 'green',
+                                1 => 'amber',
+                                0 => 'red',
+                                default => 'zinc',
+                            };
                         @endphp
 
                         <a
                             wire:key="fixture-{{ $fixture->id }}"
                             href="{{ route('fixtures.show', $fixture) }}"
                             wire:navigate
-                            class="grid gap-3 px-4 py-4 transition hover:bg-zinc-50 dark:hover:bg-zinc-800/60 md:grid-cols-[5rem_minmax(0,1fr)_auto_minmax(0,1fr)_8rem] md:items-center"
+                            class="grid gap-3 px-4 py-4 transition hover:bg-zinc-50 dark:hover:bg-zinc-800/60 md:grid-cols-[5rem_minmax(0,1fr)_auto_minmax(0,1fr)_9rem_8rem] md:items-center"
                         >
                             <div class="flex items-center gap-2 text-xs text-zinc-500 md:block">
                                 @if($fixture->match_number !== null)
@@ -62,6 +69,20 @@
                             <div class="flex min-w-0 items-center gap-2">
                                 <x-team-flag :team="$fixture->awayTeam" />
                                 <span class="truncate text-sm font-medium">{{ $awayName }}</span>
+                            </div>
+
+                            <div class="flex items-center gap-2 md:justify-end">
+                                @if($userPrediction?->points !== null)
+                                    <flux:badge size="sm" :color="$pointsBadgeColor">
+                                        {{ trans_choice(':count pt|:count pts', $userPrediction->points, ['count' => $userPrediction->points]) }}
+                                    </flux:badge>
+                                @elseif($userPrediction !== null)
+                                    <flux:badge size="sm" color="zinc">
+                                        {{ __('Pick :score', ['score' => "{$userPrediction->home_score}-{$userPrediction->away_score}"]) }}
+                                    </flux:badge>
+                                @else
+                                    <span class="text-xs text-zinc-400">{{ __('No pick') }}</span>
+                                @endif
                             </div>
 
                             <div class="flex items-center gap-2 md:justify-end">

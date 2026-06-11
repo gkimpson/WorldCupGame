@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Predictions;
 
+use App\Actions\Predictions\EnsureDefaultPredictions;
 use App\Enums\FixtureStatus;
 use App\Models\Fixture;
 use App\Models\Prediction;
@@ -18,15 +19,19 @@ class SubmitPredictions extends Component
     /** @var array<int, array{home: string, away: string}> */
     public array $scores = [];
 
-    public function mount(): void
+    public function mount(EnsureDefaultPredictions $ensureDefaultPredictions): void
     {
+        $user = Auth::user();
+
+        if ($user instanceof User) {
+            $ensureDefaultPredictions->forUser($user);
+        }
+
         $fixtureIds = Fixture::orderBy('scheduled_at')->orderBy('id')->pluck('id');
 
         foreach ($fixtureIds as $id) {
             $this->scores[$id] = ['home' => '', 'away' => ''];
         }
-
-        $user = Auth::user();
 
         if ($user instanceof User) {
             Prediction::where('user_id', $user->id)

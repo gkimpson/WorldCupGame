@@ -61,6 +61,12 @@ class User extends Authenticatable implements FilamentUser
         return $this->hasOne(UserStat::class);
     }
 
+    /** @return HasMany<Prediction, $this> */
+    public function predictions(): HasMany
+    {
+        return $this->hasMany(Prediction::class);
+    }
+
     /** @return HasMany<League, $this> */
     public function ownedLeagues(): HasMany
     {

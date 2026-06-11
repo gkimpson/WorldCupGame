@@ -10,3 +10,4 @@
 {"source":"user-event","type":"click","text":"C\n    \n      Admin-set deadline\n      A specific datetime you set in the admin panel. Flexible but needs manual management.","choice":"manual","id":null,"timestamp":1781162049308}
 {"source":"user-event","type":"click","text":"B\n    \n      Round of 32 kick-off\n      Lock when knockouts begin (~July 2). Teams have played all group games — form is known, but winner/scorer is still wide open.","choice":"knockout_start","id":null,"timestamp":1781162049688}
 {"source":"user-event","type":"click","text":"B\n    \n      Round of 32 kick-off\n      Lock when knockouts begin (~July 2). Teams have played all group games — form is known, but winner/scorer is still wide open.","choice":"knockout_start","id":null,"timestamp":1781162050354}
+{"type":"server-stopped","reason":"idle timeout"}

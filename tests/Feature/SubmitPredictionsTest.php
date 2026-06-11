@@ -63,7 +63,7 @@ it('updates an existing prediction for an unlocked fixture', function () {
         ->and($prediction->fresh()->away_score)->toBe(2);
 });
 
-it('does not save predictions for locked fixtures', function () {
+it('keeps the default nil nil prediction for locked fixtures', function () {
     $user = User::factory()->create();
     $fixture = Fixture::factory()->create(['scheduled_at' => now()->addHour()]); // within 2-hour lock window
 
@@ -73,7 +73,11 @@ it('does not save predictions for locked fixtures', function () {
         ->set("scores.{$fixture->id}.away", '1')
         ->call('save');
 
-    expect(Prediction::where('user_id', $user->id)->where('fixture_id', $fixture->id)->exists())->toBeFalse();
+    $prediction = Prediction::where('user_id', $user->id)->where('fixture_id', $fixture->id)->first();
+
+    expect($prediction)->not->toBeNull()
+        ->and($prediction->home_score)->toBe(0)
+        ->and($prediction->away_score)->toBe(0);
 });
 
 it('validates that scores are non-negative integers', function () {
