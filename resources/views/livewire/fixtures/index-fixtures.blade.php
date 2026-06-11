@@ -1,11 +1,9 @@
 <div class="mx-auto flex w-full max-w-6xl flex-col gap-6 p-6">
-    <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-            <flux:heading size="xl">{{ __('Fixtures') }}</flux:heading>
-            <flux:text class="mt-1 text-zinc-500">{{ __('Browse every match and open a fixture for predictions, scores, and points.') }}</flux:text>
-        </div>
+    <div>
+        <flux:heading size="xl">{{ __('Fixtures') }}</flux:heading>
+        <flux:text class="mt-1 text-zinc-500">{{ __('Browse every match and open a fixture for predictions, scores, and points.') }}</flux:text>
 
-        <flux:button :href="route('predictions.index')" icon="clipboard-document-list" wire:navigate>
+        <flux:button :href="route('predictions.index')" icon="clipboard-document-list" wire:navigate class="mt-4">
             {{ __('My Predictions') }}
         </flux:button>
     </div>
