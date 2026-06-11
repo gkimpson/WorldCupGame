@@ -15,6 +15,12 @@
                     <flux:sidebar.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
                         {{ __('Dashboard') }}
                     </flux:sidebar.item>
+                    <flux:sidebar.item icon="clipboard-document-list" :href="route('predictions.index')" :current="request()->routeIs('predictions.*')" wire:navigate>
+                        {{ __('Predictions') }}
+                    </flux:sidebar.item>
+                    <flux:sidebar.item icon="user-group" :href="route('leagues.index')" :current="request()->routeIs('leagues.*')" wire:navigate>
+                        {{ __('Leagues') }}
+                    </flux:sidebar.item>
                 </flux:sidebar.group>
             </flux:sidebar.nav>
 

@@ -1,0 +1,95 @@
+<?php
+
+namespace App\Livewire\Predictions;
+
+use App\Enums\FixtureStatus;
+use App\Models\Fixture;
+use App\Models\Prediction;
+use App\Models\User;
+use Flux\Flux;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
+use Livewire\Attributes\Title;
+use Livewire\Component;
+
+#[Title('My Predictions')]
+class SubmitPredictions extends Component
+{
+    /** @var array<int, array{home: string, away: string}> */
+    public array $scores = [];
+
+    public function mount(): void
+    {
+        $fixtureIds = Fixture::orderBy('scheduled_at')->orderBy('id')->pluck('id');
+
+        foreach ($fixtureIds as $id) {
+            $this->scores[$id] = ['home' => '', 'away' => ''];
+        }
+
+        $user = Auth::user();
+
+        if ($user instanceof User) {
+            Prediction::where('user_id', $user->id)
+                ->whereIn('fixture_id', $fixtureIds)
+                ->get(['fixture_id', 'home_score', 'away_score'])
+                ->each(function (Prediction $p): void {
+                    $this->scores[$p->fixture_id] = [
+                        'home' => (string) $p->home_score,
+                        'away' => (string) $p->away_score,
+                    ];
+                });
+        }
+    }
+
+    public function save(): void
+    {
+        $user = Auth::user();
+        abort_unless($user instanceof User, 403);
+
+        $this->validate([
+            'scores.*.home' => ['nullable', 'integer', 'min:0', 'max:20'],
+            'scores.*.away' => ['nullable', 'integer', 'min:0', 'max:20'],
+        ]);
+
+        $now = now();
+        $saved = 0;
+
+        Fixture::whereIn('id', array_keys($this->scores))
+            ->where('scheduled_at', '>', $now->copy()->addHours(2))
+            ->where('status', FixtureStatus::Scheduled)
+            ->pluck('id')
+            ->each(function (int $fixtureId) use ($user, &$saved): void {
+                $home = $this->scores[$fixtureId]['home'] ?? '';
+                $away = $this->scores[$fixtureId]['away'] ?? '';
+
+                if ($home === '' || $away === '') {
+                    return;
+                }
+
+                Prediction::updateOrCreate(
+                    ['user_id' => $user->id, 'fixture_id' => $fixtureId],
+                    ['home_score' => (int) $home, 'away_score' => (int) $away],
+                );
+
+                $saved++;
+            });
+
+        Flux::toast(variant: 'success', text: trans_choice(':count prediction saved.|:count predictions saved.', $saved, ['count' => $saved]));
+    }
+
+    public function render(): View
+    {
+        $now = now();
+
+        $fixtures = Fixture::with(['homeTeam', 'awayTeam'])
+            ->orderBy('scheduled_at')
+            ->orderBy('id')
+            ->get()
+            ->groupBy(fn (Fixture $f): string => $f->stage->value);
+
+        return view('livewire.predictions.submit-predictions', [
+            'fixturesByStage' => $fixtures,
+            'now' => $now,
+        ]);
+    }
+}

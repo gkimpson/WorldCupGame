@@ -14,7 +14,7 @@
 
                 <flux:input wire:model="name" :label="__('League name')" type="text" required />
 
-                <flux:button type="submit" variant="primary" icon="plus" wire:loading.attr="disabled">
+                <flux:button type="submit" variant="primary" icon="plus" wire:loading.attr="disabled" class="mt-2">
                     {{ __('Create') }}
                 </flux:button>
             </form>
@@ -29,7 +29,7 @@
 
                 <flux:input wire:model="joinCode" :label="__('Join code')" type="text" required />
 
-                <flux:button type="submit" variant="primary" icon="arrow-right" wire:loading.attr="disabled">
+                <flux:button type="submit" variant="primary" icon="arrow-right" wire:loading.attr="disabled" class="mt-2">
                     {{ __('Join') }}
                 </flux:button>
             </form>
