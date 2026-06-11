@@ -10,6 +10,7 @@ class FixtureSeeder extends Seeder
 {
     public function run(): void
     {
+        $this->call(SquadSeeder::class);
         $this->seedFromFile(resource_path('data/fixtures.json'));
     }
 
