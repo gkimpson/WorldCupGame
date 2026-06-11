@@ -56,7 +56,7 @@
 
                                 <span class="min-w-0 truncate text-sm font-medium">{{ $awayName }}</span>
 
-                                <div class="hidden shrink-0 justify-self-end sm:flex sm:items-center sm:gap-2">
+                                <div class="col-span-full flex shrink-0 items-center justify-center gap-2 sm:col-span-1 sm:justify-self-end">
                                     @if ($locked)
                                         <flux:icon.lock-closed class="size-4 text-zinc-400" />
                                     @else
@@ -65,7 +65,7 @@
                                         @else
                                             <flux:button
                                                 size="sm"
-                                                variant="ghost"
+                                                variant="primary"
                                                 wire:click="saveFixture({{ $fixture->id }})"
                                                 wire:loading.attr="disabled"
                                                 wire:target="saveFixture({{ $fixture->id }})"
