@@ -49,9 +49,9 @@
                                 <span class="min-w-0 truncate text-sm font-medium">{{ $awayName }}</span>
 
                                 @if ($fixture->scheduled_at !== null)
-                                    <span class="hidden shrink-0 justify-self-end text-xs text-zinc-400 sm:inline">
+                                    <flux:link :href="route('fixtures.show', $fixture)" wire:navigate class="hidden shrink-0 justify-self-end text-xs sm:inline">
                                         {{ $fixture->scheduled_at->format('d M H:i') }}
-                                    </span>
+                                    </flux:link>
                                 @endif
                             </div>
                         @endforeach

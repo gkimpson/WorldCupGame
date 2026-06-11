@@ -15,6 +15,9 @@
                     <flux:sidebar.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
                         {{ __('Dashboard') }}
                     </flux:sidebar.item>
+                    <flux:sidebar.item icon="calendar-days" :href="route('fixtures.index')" :current="request()->routeIs('fixtures.*')" wire:navigate>
+                        {{ __('Fixtures') }}
+                    </flux:sidebar.item>
                     <flux:sidebar.item icon="clipboard-document-list" :href="route('predictions.index')" :current="request()->routeIs('predictions.*')" wire:navigate>
                         {{ __('Predictions') }}
                     </flux:sidebar.item>
