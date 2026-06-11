@@ -1,4 +1,4 @@
-<div class="mx-auto flex w-full max-w-5xl flex-col gap-6 p-6">
+<div class="flex w-full max-w-5xl flex-col gap-6">
     <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
             <flux:heading size="xl">{{ $league->name }}</flux:heading>

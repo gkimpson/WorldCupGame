@@ -1,4 +1,4 @@
-<div class="mx-auto flex w-full max-w-5xl flex-col gap-6 p-6">
+<div class="flex w-full max-w-5xl flex-col gap-6">
     <flux:heading size="xl">{{ __('My Predictions') }}</flux:heading>
 
     <form wire:submit="save" class="flex flex-col gap-8">

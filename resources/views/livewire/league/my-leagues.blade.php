@@ -1,4 +1,4 @@
-<div class="mx-auto flex w-full max-w-5xl flex-col gap-6 p-6">
+<div class="flex w-full max-w-5xl flex-col gap-6">
     <div>
         <flux:heading size="xl">{{ __('Private Leagues') }}</flux:heading>
         <flux:text class="mt-1 text-zinc-500">{{ __('Create a league for friends or join one with a code.') }}</flux:text>

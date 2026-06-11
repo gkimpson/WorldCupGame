@@ -10,7 +10,7 @@
     };
 @endphp
 
-<div class="mx-auto flex w-full max-w-5xl flex-col gap-6 p-6">
+<div class="flex w-full max-w-5xl flex-col gap-6">
     <div class="flex items-center justify-between gap-4">
         <flux:link :href="route('fixtures.index')" wire:navigate class="text-sm">
             {{ __('Back to fixtures') }}

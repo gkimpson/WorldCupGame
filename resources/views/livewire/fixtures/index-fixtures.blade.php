@@ -1,4 +1,4 @@
-<div class="mx-auto flex w-full max-w-6xl flex-col gap-6 p-6">
+<div class="flex w-full max-w-6xl flex-col gap-6">
     <div>
         <flux:heading size="xl">{{ __('Fixtures') }}</flux:heading>
         <flux:text class="mt-1 text-zinc-500">{{ __('Browse every match and open a fixture for predictions, scores, and points.') }}</flux:text>
