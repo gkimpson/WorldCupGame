@@ -9,9 +9,12 @@ use App\Livewire\Leaderboard\PerfectLeaderboard;
 use App\Livewire\League\MyLeagues;
 use App\Livewire\League\ShowLeague;
 use App\Livewire\Predictions\SubmitPredictions;
+use App\Livewire\Users\ShowProfile;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'welcome')->name('home');
+
+Route::livewire('/users/{user}', ShowProfile::class)->name('users.show');
 
 Route::livewire('/leaderboard', GlobalLeaderboard::class)->name('leaderboard.global');
 Route::livewire('/leaderboard/accuracy', AccuracyLeaderboard::class)->name('leaderboard.accuracy');
