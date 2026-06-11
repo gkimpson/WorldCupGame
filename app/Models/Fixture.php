@@ -91,6 +91,17 @@ class Fixture extends Model
         return $this->hasMany(Prediction::class);
     }
 
+    public function isLocked(): bool
+    {
+        if ($this->scheduled_at === null) {
+            return false;
+        }
+
+        $minutes = (int) config('predictions.lock_minutes_before_kickoff', 120);
+
+        return $this->scheduled_at->subMinutes($minutes)->isPast();
+    }
+
     public function scheduledAtIso8601(): ?string
     {
         return $this->scheduled_at?->toIso8601String();

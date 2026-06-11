@@ -56,12 +56,12 @@ class SubmitPredictions extends Component
             'scores.*.away' => ['nullable', 'integer', 'min:0', 'max:20'],
         ]);
 
-        $now = now();
         $saved = 0;
 
         Fixture::whereIn('id', array_keys($this->scores))
-            ->where('scheduled_at', '>', $now->copy()->addHours(2))
             ->where('status', FixtureStatus::Scheduled)
+            ->get(['id', 'scheduled_at'])
+            ->reject(fn (Fixture $f): bool => $f->isLocked())
             ->pluck('id')
             ->each(function (int $fixtureId) use ($user, &$saved): void {
                 $home = $this->scores[$fixtureId]['home'] ?? '';
@@ -84,8 +84,6 @@ class SubmitPredictions extends Component
 
     public function render(): View
     {
-        $now = now();
-
         $fixtures = Fixture::with(['homeTeam', 'awayTeam'])
             ->orderBy('scheduled_at')
             ->orderBy('id')
@@ -94,7 +92,6 @@ class SubmitPredictions extends Component
 
         return view('livewire.predictions.submit-predictions', [
             'fixturesByStage' => $fixtures,
-            'now' => $now,
         ]);
     }
 }

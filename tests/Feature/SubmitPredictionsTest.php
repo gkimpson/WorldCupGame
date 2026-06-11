@@ -80,6 +80,15 @@ it('keeps the default nil nil prediction for locked fixtures', function () {
         ->and($prediction->away_score)->toBe(0);
 });
 
+it('shows a locked badge for fixtures within the lock window', function () {
+    $user = User::factory()->create();
+    Fixture::factory()->create(['scheduled_at' => now()->addHour()]);
+
+    Livewire::actingAs($user)
+        ->test(SubmitPredictions::class)
+        ->assertSee('Locked');
+});
+
 it('validates that scores are non-negative integers', function () {
     $user = User::factory()->create();
     $fixture = Fixture::factory()->create(['scheduled_at' => now()->addDays(10)]);

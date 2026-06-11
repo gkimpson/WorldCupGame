@@ -12,7 +12,7 @@
                     <div class="divide-y divide-zinc-100 dark:divide-zinc-700">
                         @foreach ($fixtures as $fixture)
                             @php
-                                $locked = $fixture->scheduled_at !== null && $fixture->scheduled_at <= $now->copy()->addHours(2);
+                                $locked = $fixture->isLocked();
                                 $homeName = $fixture->homeTeam?->name ?? $fixture->home_team_placeholder ?? 'TBD';
                                 $awayName = $fixture->awayTeam?->name ?? $fixture->away_team_placeholder ?? 'TBD';
                             @endphp
@@ -48,11 +48,15 @@
 
                                 <span class="min-w-0 truncate text-sm font-medium">{{ $awayName }}</span>
 
-                                @if ($fixture->scheduled_at !== null)
-                                    <flux:link :href="route('fixtures.show', $fixture)" wire:navigate class="hidden shrink-0 justify-self-end text-xs sm:inline">
-                                        {{ $fixture->scheduled_at->format('d M H:i') }}
-                                    </flux:link>
-                                @endif
+                                <div class="hidden shrink-0 justify-self-end sm:flex sm:items-center sm:gap-1.5">
+                                    @if ($locked)
+                                        <flux:badge size="sm" color="zinc">Locked</flux:badge>
+                                    @elseif ($fixture->scheduled_at !== null)
+                                        <flux:link :href="route('fixtures.show', $fixture)" wire:navigate class="text-xs">
+                                            {{ $fixture->scheduled_at->format('d M H:i') }}
+                                        </flux:link>
+                                    @endif
+                                </div>
                             </div>
                         @endforeach
                     </div>

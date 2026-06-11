@@ -84,6 +84,9 @@
                             </div>
 
                             <div class="flex items-center gap-2 md:justify-end">
+                                @if ($fixture->isLocked() && $fixture->status !== \App\Enums\FixtureStatus::Completed)
+                                    <flux:badge size="sm" color="amber">Locked</flux:badge>
+                                @endif
                                 <flux:badge size="sm">{{ $fixture->status->label() }}</flux:badge>
                                 <span class="text-xs text-zinc-500">{{ trans_choice(':count pick|:count picks', $fixture->predictions_count, ['count' => $fixture->predictions_count]) }}</span>
                             </div>
