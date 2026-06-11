@@ -28,11 +28,11 @@ class FixtureFactory extends Factory
             'home_team_placeholder' => null,
             'away_team_placeholder' => null,
             'stage' => FixtureStage::GroupStage,
-            'group' => fake()->randomElement(['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L']),
+            'group' => $this->faker->randomElement(['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L']),
             'match_number' => null,
-            'venue' => fake()->company().' Stadium',
-            'city' => fake()->city(),
-            'scheduled_at' => fake()->dateTimeBetween('2026-06-11', '2026-07-19'),
+            'venue' => $this->faker->company().' Stadium',
+            'city' => $this->faker->city(),
+            'scheduled_at' => $this->faker->dateTimeBetween('2026-06-11', '2026-07-19'),
             'status' => FixtureStatus::Scheduled,
             'is_locked' => false,
             'home_score' => null,
@@ -51,8 +51,8 @@ class FixtureFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'status' => FixtureStatus::Completed,
-            'home_score' => fake()->numberBetween(0, 5),
-            'away_score' => fake()->numberBetween(0, 5),
+            'home_score' => $this->faker->numberBetween(0, 5),
+            'away_score' => $this->faker->numberBetween(0, 5),
         ]);
     }
 
@@ -76,7 +76,7 @@ class FixtureFactory extends Factory
             'away_team_id' => null,
             'home_team_placeholder' => 'TBD',
             'away_team_placeholder' => 'TBD',
-            'stage' => fake()->randomElement([
+            'stage' => $this->faker->randomElement([
                 FixtureStage::RoundOf32,
                 FixtureStage::RoundOf16,
                 FixtureStage::QuarterFinal,

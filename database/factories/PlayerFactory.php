@@ -21,10 +21,10 @@ class PlayerFactory extends Factory
     {
         return [
             'team_id' => Team::factory(),
-            'name' => fake()->name('male'),
-            'position' => fake()->randomElement(PlayerPosition::cases()),
-            'shirt_number' => fake()->numberBetween(1, 26),
-            'date_of_birth' => fake()->dateTimeBetween('-40 years', '-17 years'),
+            'name' => $this->faker->name('male'),
+            'position' => $this->faker->randomElement(PlayerPosition::cases()),
+            'shirt_number' => $this->faker->numberBetween(1, 26),
+            'date_of_birth' => $this->faker->dateTimeBetween('-40 years', '-17 years'),
         ];
     }
 

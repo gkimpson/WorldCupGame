@@ -18,14 +18,14 @@ class TeamFactory extends Factory
      */
     public function definition(): array
     {
-        $name = fake()->unique()->country();
+        $name = $this->faker->unique()->country();
 
         return [
             'name' => $name,
-            'code' => Str::upper(fake()->unique()->lexify('???')),
+            'code' => Str::upper($this->faker->unique()->lexify('???')),
             'slug' => Str::slug($name),
-            'group' => fake()->optional()->randomElement(['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L']),
-            'confederation' => fake()->optional()->randomElement(['UEFA', 'CONMEBOL', 'CONCACAF', 'CAF', 'AFC', 'OFC']),
+            'group' => $this->faker->optional()->randomElement(['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L']),
+            'confederation' => $this->faker->optional()->randomElement(['UEFA', 'CONMEBOL', 'CONCACAF', 'CAF', 'AFC', 'OFC']),
             'flag_code' => null,
         ];
     }
