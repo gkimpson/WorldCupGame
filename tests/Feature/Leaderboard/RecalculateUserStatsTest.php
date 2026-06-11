@@ -100,13 +100,13 @@ it('counts correct_outcomes for predictions with 1 or more points', function () 
     // fixture2: exact score match 1-1 (3 points)
     $fixture2 = Fixture::factory()->completed()->create(['home_score' => 1, 'away_score' => 1]);
 
-    Prediction::factory()->create([
+    Prediction::factory()->withPoints(1)->create([
         'user_id' => $user->id,
         'fixture_id' => $fixture1->id,
         'home_score' => 1,
         'away_score' => 0,
     ]);
-    Prediction::factory()->create([
+    Prediction::factory()->withPoints(3)->create([
         'user_id' => $user->id,
         'fixture_id' => $fixture2->id,
         'home_score' => 1,
@@ -128,13 +128,13 @@ it('counts exact_scores only for predictions with exactly 3 points', function ()
     // fixture2: exact score match 1-1 (3 points)
     $fixture2 = Fixture::factory()->completed()->create(['home_score' => 1, 'away_score' => 1]);
 
-    Prediction::factory()->create([
+    Prediction::factory()->withPoints(1)->create([
         'user_id' => $user->id,
         'fixture_id' => $fixture1->id,
         'home_score' => 1,
         'away_score' => 0,
     ]);
-    Prediction::factory()->create([
+    Prediction::factory()->withPoints(3)->create([
         'user_id' => $user->id,
         'fixture_id' => $fixture2->id,
         'home_score' => 1,
@@ -154,7 +154,7 @@ it('does not count zero point predictions toward correct_outcomes', function () 
     // home wins 1-0; prediction is away win (0 points, incorrect outcome)
     $fixture = Fixture::factory()->completed()->create(['home_score' => 1, 'away_score' => 0]);
 
-    Prediction::factory()->create([
+    Prediction::factory()->withPoints(0)->create([
         'user_id' => $user->id,
         'fixture_id' => $fixture->id,
         'home_score' => 0,
