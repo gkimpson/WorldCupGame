@@ -20,9 +20,11 @@ class FixtureFactory extends Factory
      */
     public function definition(): array
     {
+        $qualifiedIds = Team::whereNotNull('group')->pluck('id');
+
         return [
-            'home_team_id' => Team::factory(),
-            'away_team_id' => Team::factory(),
+            'home_team_id' => $qualifiedIds->isNotEmpty() ? $qualifiedIds->random() : Team::factory(),
+            'away_team_id' => $qualifiedIds->isNotEmpty() ? $qualifiedIds->random() : Team::factory(),
             'home_team_placeholder' => null,
             'away_team_placeholder' => null,
             'stage' => FixtureStage::GroupStage,

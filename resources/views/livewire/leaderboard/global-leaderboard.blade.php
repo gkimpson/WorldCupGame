@@ -39,6 +39,13 @@
                         </flux:table.cell>
                         <flux:table.cell>{{ $pinnedEntry['total_points'] }}</flux:table.cell>
                         <flux:table.cell>{{ $pinnedEntry['predictions_made'] }} / {{ \App\Models\Fixture::TOTAL_WORLD_CUP_MATCHES }}</flux:table.cell>
+                        <flux:table.cell>
+                            <x-share-button
+                                title="My World Cup 104 Rank"
+                                :text="'I\'m ranked #' . $pinnedEntry['rank'] . ' with ' . $pinnedEntry['total_points'] . ' pts on the World Cup 104 Global Leaderboard 🏆'"
+                                :url="route('leaderboard.global')"
+                            />
+                        </flux:table.cell>
                     </flux:table.row>
                 </flux:table.rows>
             </flux:table>

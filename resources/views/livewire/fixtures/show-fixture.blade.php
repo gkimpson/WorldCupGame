@@ -65,9 +65,16 @@
             <div class="flex items-center justify-between gap-4">
                 <flux:heading size="lg">{{ __('Your Prediction') }}</flux:heading>
 
-                @if($userPrediction?->points !== null)
-                    <flux:badge color="green">{{ trans_choice(':count point|:count points', $userPrediction->points, ['count' => $userPrediction->points]) }}</flux:badge>
-                @endif
+                <div class="flex items-center gap-2">
+                    @if($userPrediction?->points !== null)
+                        <flux:badge color="green">{{ trans_choice(':count point|:count points', $userPrediction->points, ['count' => $userPrediction->points]) }}</flux:badge>
+                        <x-share-button
+                            :title="$homeName . ' ' . $fixture->home_score . '–' . $fixture->away_score . ' ' . $awayName . ' · World Cup 104'"
+                            :text="'I predicted ' . $userPrediction->home_score . '–' . $userPrediction->away_score . ' and scored ' . $userPrediction->points . ' pts on ' . $homeName . ' vs ' . $awayName . ' at World Cup 104 ⚽'"
+                            :url="route('fixtures.show', $fixture)"
+                        />
+                    @endif
+                </div>
             </div>
 
             @if($userPrediction !== null)

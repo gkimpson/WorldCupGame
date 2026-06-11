@@ -1,0 +1,100 @@
+<h2>Share Button Placement & Text</h2>
+<p class="subtitle">Three surfaces — click a surface to approve its design, or leave feedback below</p>
+
+<div class="section">
+  <span class="label">Surface 1 — Profile Page (own profile only)</span>
+  <div class="mockup" style="margin-top:8px">
+    <div class="mockup-header">Profile Page · /users/{user}</div>
+    <div class="mockup-body" style="padding:16px;display:flex;flex-direction:column;gap:12px">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+        <div>
+          <div style="font-size:1.25rem;font-weight:700">Gavin Kimpson</div>
+          <div style="color:#71717a;font-size:0.875rem">Global Rank #42</div>
+        </div>
+        <button style="display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:8px;border:1px solid #e4e4e7;font-size:0.875rem;background:#fff;cursor:pointer">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+          Share my stats
+        </button>
+      </div>
+      <div style="background:#f9f9f9;border:1px solid #e4e4e7;border-radius:8px;padding:12px;font-size:0.8rem;color:#52525b;font-family:monospace">
+        <div style="color:#a1a1aa;margin-bottom:4px">Share text sent:</div>
+        <div><strong>Title:</strong> My World Cup 104 Stats</div>
+        <div><strong>Text:</strong> I'm ranked #42 with 245 pts &amp; 68% accuracy at World Cup 104 ⚽</div>
+        <div><strong>URL:</strong> worldcup-104.test/users/gavin</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <span class="label">Surface 2 — Match Result (scored predictions only)</span>
+  <div class="mockup" style="margin-top:8px">
+    <div class="mockup-header">Fixture Page · /fixtures/{fixture} — "Your Prediction" card</div>
+    <div class="mockup-body" style="padding:16px;display:flex;flex-direction:column;gap:10px">
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div style="font-size:1rem;font-weight:600">Your Prediction</div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="background:#dcfce7;color:#166534;font-size:0.75rem;padding:2px 8px;border-radius:999px;font-weight:600">3 points</span>
+          <button style="display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:8px;border:1px solid #e4e4e7;font-size:0.8rem;background:#fff;cursor:pointer">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+            Share result
+          </button>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:center;gap:12px;background:#f4f4f5;border-radius:8px;padding:12px;font-size:1.1rem;font-weight:600">
+        <span>Brazil</span>
+        <span>2 – 1</span>
+        <span>Argentina</span>
+      </div>
+      <div style="background:#f9f9f9;border:1px solid #e4e4e7;border-radius:8px;padding:12px;font-size:0.8rem;color:#52525b;font-family:monospace">
+        <div style="color:#a1a1aa;margin-bottom:4px">Share text sent:</div>
+        <div><strong>Title:</strong> Brazil 2–1 Argentina · World Cup 104</div>
+        <div><strong>Text:</strong> I predicted 2–1 and scored 3 pts on Brazil vs Argentina at World Cup 104 ⚽</div>
+        <div><strong>URL:</strong> worldcup-104.test/fixtures/abc123</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <span class="label">Surface 3 — Leaderboard Rank (pinned "You" row)</span>
+  <div class="mockup" style="margin-top:8px">
+    <div class="mockup-header">Global Leaderboard · /leaderboard — pinned entry</div>
+    <div class="mockup-body" style="padding:16px">
+      <table style="width:100%;font-size:0.875rem;border-collapse:collapse">
+        <thead>
+          <tr style="color:#71717a;text-align:left">
+            <th style="padding:6px 8px;width:40px">#</th>
+            <th style="padding:6px 8px">Player</th>
+            <th style="padding:6px 8px">Points</th>
+            <th style="padding:6px 8px">Predictions</th>
+            <th style="padding:6px 8px"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="background:#fffbeb;font-weight:500">
+            <td style="padding:8px">42</td>
+            <td style="padding:8px">
+              Gavin Kimpson
+              <span style="background:#fef3c7;color:#92400e;font-size:0.7rem;padding:1px 6px;border-radius:999px;margin-left:6px">You</span>
+            </td>
+            <td style="padding:8px">245</td>
+            <td style="padding:8px">78 / 104</td>
+            <td style="padding:8px;text-align:right">
+              <button style="display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:8px;border:1px solid #e4e4e7;font-size:0.8rem;background:#fff;cursor:pointer">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+                Share rank
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div style="background:#f9f9f9;border:1px solid #e4e4e7;border-radius:8px;padding:12px;font-size:0.8rem;color:#52525b;font-family:monospace;margin-top:10px">
+        <div style="color:#a1a1aa;margin-bottom:4px">Share text sent:</div>
+        <div><strong>Title:</strong> My World Cup 104 Rank</div>
+        <div><strong>Text:</strong> I'm ranked #42 with 245 pts on the World Cup 104 Global Leaderboard 🏆</div>
+        <div><strong>URL:</strong> worldcup-104.test/leaderboard</div>
+      </div>
+    </div>
+  </div>
+</div>

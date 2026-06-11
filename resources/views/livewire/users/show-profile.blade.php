@@ -1,7 +1,7 @@
 <div class="flex h-full w-full flex-1 flex-col gap-6">
 
     {{-- Header --}}
-    <div class="flex items-center gap-3">
+    <div class="flex items-center justify-between gap-3">
         <div>
             <flux:heading size="xl">{{ $user->name }}</flux:heading>
             <flux:text class="text-zinc-500">
@@ -12,6 +12,20 @@
                 @endif
             </flux:text>
         </div>
+
+        @if (auth()->id() === $user->id)
+            @php
+                $shareText = $globalRank > 0
+                    ? "I'm ranked #{$globalRank} with {$totalPoints} pts & {$accuracyPct}% accuracy at World Cup 104 ⚽"
+                    : "I've scored {$totalPoints} pts at World Cup 104 ⚽";
+            @endphp
+            <x-share-button
+                title="My World Cup 104 Stats"
+                :text="$shareText"
+                :url="route('users.show', $user)"
+                label="Share my stats"
+            />
+        @endif
     </div>
 
     {{-- Stat tiles --}}

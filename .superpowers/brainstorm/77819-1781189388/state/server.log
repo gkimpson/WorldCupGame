@@ -1,0 +1,4 @@
+{"type":"server-started","port":51134,"host":"127.0.0.1","url_host":"localhost","url":"http://localhost:51134","screen_dir":"/Users/gavin/Herd/worldcup-104-0-0/.superpowers/brainstorm/77819-1781189388/content","state_dir":"/Users/gavin/Herd/worldcup-104-0-0/.superpowers/brainstorm/77819-1781189388/state"}
+{"type":"screen-added","file":"/Users/gavin/Herd/worldcup-104-0-0/.superpowers/brainstorm/77819-1781189388/content/share-surfaces.html"}
+{"type":"screen-added","file":"/Users/gavin/Herd/worldcup-104-0-0/.superpowers/brainstorm/77819-1781189388/content/waiting.html"}
+{"type":"server-stopped","reason":"idle timeout"}
