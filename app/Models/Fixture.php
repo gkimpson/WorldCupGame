@@ -26,6 +26,7 @@ use Illuminate\Support\Carbon;
  * @property string|null $city
  * @property Carbon|null $scheduled_at
  * @property FixtureStatus $status
+ * @property bool $is_locked
  * @property int|null $home_score
  * @property int|null $away_score
  * @property int|null $home_score_aet
@@ -37,7 +38,7 @@ use Illuminate\Support\Carbon;
     'home_team_id', 'away_team_id',
     'home_team_placeholder', 'away_team_placeholder',
     'stage', 'group', 'match_number',
-    'venue', 'city', 'scheduled_at', 'status',
+    'venue', 'city', 'scheduled_at', 'status', 'is_locked',
     'home_score', 'away_score',
     'home_score_aet', 'away_score_aet',
     'home_score_pens', 'away_score_pens',
@@ -57,6 +58,7 @@ class Fixture extends Model
         return [
             'stage' => FixtureStage::class,
             'status' => FixtureStatus::class,
+            'is_locked' => 'boolean',
             'scheduled_at' => 'datetime',
             'home_score' => 'integer',
             'away_score' => 'integer',
@@ -93,6 +95,10 @@ class Fixture extends Model
 
     public function isLocked(): bool
     {
+        if ($this->is_locked) {
+            return true;
+        }
+
         if ($this->scheduled_at === null) {
             return false;
         }

@@ -29,6 +29,18 @@ it('is locked when kickoff has already passed', function () {
     expect($fixture->isLocked())->toBeTrue();
 });
 
+it('is locked when the is_locked column is true regardless of kickoff time', function () {
+    $fixture = new Fixture(['scheduled_at' => now()->addDays(10), 'is_locked' => true]);
+
+    expect($fixture->isLocked())->toBeTrue();
+});
+
+it('is not locked when is_locked column is false and kickoff is far away', function () {
+    $fixture = new Fixture(['scheduled_at' => now()->addDays(10), 'is_locked' => false]);
+
+    expect($fixture->isLocked())->toBeFalse();
+});
+
 it('respects a custom lock window from config', function () {
     config(['predictions.lock_minutes_before_kickoff' => 60]);
 

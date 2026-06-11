@@ -34,6 +34,7 @@ class FixtureFactory extends Factory
             'city' => fake()->city(),
             'scheduled_at' => fake()->dateTimeBetween('2026-06-11', '2026-07-19'),
             'status' => FixtureStatus::Scheduled,
+            'is_locked' => false,
             'home_score' => null,
             'away_score' => null,
             'home_score_aet' => null,
@@ -52,6 +53,16 @@ class FixtureFactory extends Factory
             'status' => FixtureStatus::Completed,
             'home_score' => fake()->numberBetween(0, 5),
             'away_score' => fake()->numberBetween(0, 5),
+        ]);
+    }
+
+    /**
+     * Indicate that the fixture is admin-locked and cannot accept new predictions.
+     */
+    public function adminLocked(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'is_locked' => true,
         ]);
     }
 

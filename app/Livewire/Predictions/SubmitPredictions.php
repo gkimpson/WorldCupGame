@@ -19,6 +19,9 @@ class SubmitPredictions extends Component
     /** @var array<int, array{home: string, away: string}> */
     public array $scores = [];
 
+    /** @var array<int, bool> */
+    public array $savedFixtures = [];
+
     public function mount(EnsureDefaultPredictions $ensureDefaultPredictions): void
     {
         $user = Auth::user();
@@ -46,6 +49,37 @@ class SubmitPredictions extends Component
         }
     }
 
+    public function saveFixture(int $fixtureId): void
+    {
+        $user = Auth::user();
+        abort_unless($user instanceof User, 403);
+
+        $fixture = Fixture::find($fixtureId);
+        abort_unless(
+            $fixture instanceof Fixture
+            && $fixture->status === FixtureStatus::Scheduled
+            && ! $fixture->isLocked(),
+            403
+        );
+
+        $this->validate([
+            "scores.{$fixtureId}.home" => ['required', 'integer', 'min:0', 'max:20'],
+            "scores.{$fixtureId}.away" => ['required', 'integer', 'min:0', 'max:20'],
+        ]);
+
+        Prediction::updateOrCreate(
+            ['user_id' => $user->id, 'fixture_id' => $fixtureId],
+            [
+                'home_score' => (int) $this->scores[$fixtureId]['home'],
+                'away_score' => (int) $this->scores[$fixtureId]['away'],
+            ],
+        );
+
+        $this->savedFixtures[$fixtureId] = true;
+
+        Flux::toast(variant: 'success', text: __('Prediction saved.'));
+    }
+
     public function save(): void
     {
         $user = Auth::user();
@@ -60,7 +94,7 @@ class SubmitPredictions extends Component
 
         Fixture::whereIn('id', array_keys($this->scores))
             ->where('status', FixtureStatus::Scheduled)
-            ->get(['id', 'scheduled_at'])
+            ->get(['id', 'scheduled_at', 'is_locked'])
             ->reject(fn (Fixture $f): bool => $f->isLocked())
             ->pluck('id')
             ->each(function (int $fixtureId) use ($user, &$saved): void {

@@ -17,7 +17,15 @@
                                 $awayName = $fixture->awayTeam?->name ?? $fixture->away_team_placeholder ?? 'TBD';
                             @endphp
 
-                            <div wire:key="fixture-{{ $fixture->id }}" class="grid grid-cols-[minmax(0,1fr)_1.25rem_auto_1.25rem_minmax(0,1fr)] items-center gap-2 px-4 py-3 sm:grid-cols-[minmax(0,1fr)_1.25rem_auto_1.25rem_minmax(0,1fr)_5rem] sm:gap-3 {{ $locked ? 'opacity-50' : '' }}">
+                            <div wire:key="fixture-{{ $fixture->id }}" class="grid grid-cols-[minmax(0,1fr)_1.25rem_auto_1.25rem_minmax(0,1fr)] items-center gap-2 px-4 py-3 sm:grid-cols-[4rem_minmax(0,1fr)_1.25rem_auto_1.25rem_minmax(0,1fr)_5rem] sm:gap-3 {{ $locked ? 'opacity-50' : '' }}">
+                                <div class="hidden sm:flex sm:flex-col sm:items-start">
+                                    @if ($fixture->scheduled_at !== null)
+                                        <flux:link :href="route('fixtures.show', $fixture)" wire:navigate class="text-xs leading-tight text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300">
+                                            {{ $fixture->scheduled_at->format('d M') }}<br>{{ $fixture->scheduled_at->format('H:i') }}
+                                        </flux:link>
+                                    @endif
+                                </div>
+
                                 <span class="min-w-0 truncate text-right text-sm font-medium">{{ $homeName }}</span>
 
                                 <x-team-flag :team="$fixture->homeTeam" class="justify-self-end" />
@@ -48,13 +56,21 @@
 
                                 <span class="min-w-0 truncate text-sm font-medium">{{ $awayName }}</span>
 
-                                <div class="hidden shrink-0 justify-self-end sm:flex sm:items-center sm:gap-1.5">
+                                <div class="hidden shrink-0 justify-self-end sm:flex sm:items-center sm:gap-2">
                                     @if ($locked)
-                                        <flux:badge size="sm" color="zinc">Locked</flux:badge>
-                                    @elseif ($fixture->scheduled_at !== null)
-                                        <flux:link :href="route('fixtures.show', $fixture)" wire:navigate class="text-xs">
-                                            {{ $fixture->scheduled_at->format('d M H:i') }}
-                                        </flux:link>
+                                        <flux:icon.lock-closed class="size-4 text-zinc-400" />
+                                    @else
+                                        @if (!empty($savedFixtures[$fixture->id]))
+                                            <flux:badge size="sm" color="green">Saved</flux:badge>
+                                        @else
+                                            <flux:button
+                                                size="sm"
+                                                variant="ghost"
+                                                wire:click="saveFixture({{ $fixture->id }})"
+                                                wire:loading.attr="disabled"
+                                                wire:target="saveFixture({{ $fixture->id }})"
+                                            >Confirm</flux:button>
+                                        @endif
                                     @endif
                                 </div>
                             </div>
