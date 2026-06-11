@@ -9,6 +9,8 @@ use Filament\Panel;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
@@ -51,6 +53,24 @@ class User extends Authenticatable implements FilamentUser
     public function canAccessPanel(Panel $panel): bool
     {
         return $this->hasRole('admin');
+    }
+
+    /** @return HasOne<UserStat, $this> */
+    public function stat(): HasOne
+    {
+        return $this->hasOne(UserStat::class);
+    }
+
+    /** @return HasMany<League, $this> */
+    public function ownedLeagues(): HasMany
+    {
+        return $this->hasMany(League::class, 'owner_user_id');
+    }
+
+    /** @return HasMany<LeagueMember, $this> */
+    public function leagueMemberships(): HasMany
+    {
+        return $this->hasMany(LeagueMember::class);
     }
 
     /**
