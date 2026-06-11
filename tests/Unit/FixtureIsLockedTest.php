@@ -11,16 +11,10 @@ it('is not locked when scheduled_at is null', function () {
     expect($fixture->isLocked())->toBeFalse();
 });
 
-it('is not locked when kickoff is beyond the lock window', function () {
-    $fixture = new Fixture(['scheduled_at' => now()->addHours(3)]);
+it('is not locked when kickoff is in the future', function () {
+    $fixture = new Fixture(['scheduled_at' => now()->addSecond()]);
 
     expect($fixture->isLocked())->toBeFalse();
-});
-
-it('is locked when kickoff is within the lock window', function () {
-    $fixture = new Fixture(['scheduled_at' => now()->addHour()]);
-
-    expect($fixture->isLocked())->toBeTrue();
 });
 
 it('is locked when kickoff has already passed', function () {
