@@ -22,7 +22,7 @@ class SquadSeeder extends Seeder
      * Upsert teams and their players from a normalised squads JSON file.
      *
      * The file is an array of teams, each shaped as:
-     * { name, code?, group?, confederation?, flag_url?, players: [ { name, position, shirt_number?, date_of_birth? } ] }
+     * { name, code?, group?, confederation?, flag_code?, players: [ { name, position, shirt_number?, date_of_birth? } ] }
      * Player `position` holds the raw BBC label and is normalised via PlayerPosition::fromBbc().
      */
     public function seedFromFile(string $path): void
@@ -44,7 +44,7 @@ class SquadSeeder extends Seeder
                     'slug' => Str::slug($squad['name']),
                     'group' => $squad['group'] ?? null,
                     'confederation' => $squad['confederation'] ?? null,
-                    'flag_url' => $squad['flag_url'] ?? null,
+                    'flag_code' => $squad['flag_code'] ?? null,
                 ],
             );
 

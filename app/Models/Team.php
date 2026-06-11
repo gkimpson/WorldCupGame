@@ -15,9 +15,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string $slug
  * @property string|null $group
  * @property string|null $confederation
- * @property string|null $flag_url
+ * @property string|null $flag_code
  */
-#[Fillable(['name', 'code', 'slug', 'group', 'confederation', 'flag_url'])]
+#[Fillable(['name', 'code', 'slug', 'group', 'confederation', 'flag_code'])]
 class Team extends Model
 {
     /** @use HasFactory<TeamFactory> */

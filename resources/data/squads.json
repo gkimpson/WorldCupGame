@@ -4,7 +4,7 @@
     "code": "MEX",
     "group": "A",
     "confederation": "CONCACAF",
-    "flag_url": null,
+    "flag_code": "mx",
     "players": [
       {
         "name": "Raul Rangel",
@@ -117,7 +117,7 @@
     "code": "RSA",
     "group": "A",
     "confederation": "CAF",
-    "flag_url": null,
+    "flag_code": "za",
     "players": [
       {
         "name": "Ronwen Williams",
@@ -230,7 +230,7 @@
     "code": "KOR",
     "group": "A",
     "confederation": "AFC",
-    "flag_url": null,
+    "flag_code": "kr",
     "players": [
       {
         "name": "Jo Hyeon-woo",
@@ -343,7 +343,7 @@
     "code": "CZE",
     "group": "A",
     "confederation": "UEFA",
-    "flag_url": null,
+    "flag_code": "cz",
     "players": [
       {
         "name": "Lukas Hornicek",
@@ -456,7 +456,7 @@
     "code": "CAN",
     "group": "B",
     "confederation": "CONCACAF",
-    "flag_url": null,
+    "flag_code": "ca",
     "players": [
       {
         "name": "Dayne St Clair",
@@ -569,7 +569,7 @@
     "code": "BIH",
     "group": "B",
     "confederation": "UEFA",
-    "flag_url": null,
+    "flag_code": "ba",
     "players": [
       {
         "name": "Nikola Vasilj",
@@ -682,7 +682,7 @@
     "code": "QAT",
     "group": "B",
     "confederation": "AFC",
-    "flag_url": null,
+    "flag_code": "qa",
     "players": [
       {
         "name": "Salah Zakaria",
@@ -795,7 +795,7 @@
     "code": "SUI",
     "group": "B",
     "confederation": "UEFA",
-    "flag_url": null,
+    "flag_code": "ch",
     "players": [
       {
         "name": "Marvin Keller",
@@ -908,7 +908,7 @@
     "code": "BRA",
     "group": "C",
     "confederation": "CONMEBOL",
-    "flag_url": null,
+    "flag_code": "br",
     "players": [
       {
         "name": "Alisson",
@@ -1021,7 +1021,7 @@
     "code": "MAR",
     "group": "C",
     "confederation": "CAF",
-    "flag_url": null,
+    "flag_code": "ma",
     "players": [
       {
         "name": "Yassine Bounou",
@@ -1134,7 +1134,7 @@
     "code": "HAI",
     "group": "C",
     "confederation": "CONCACAF",
-    "flag_url": null,
+    "flag_code": "ht",
     "players": [
       {
         "name": "Johnny Placide",
@@ -1247,7 +1247,7 @@
     "code": "SCO",
     "group": "C",
     "confederation": "UEFA",
-    "flag_url": null,
+    "flag_code": "gb-sct",
     "players": [
       {
         "name": "Craig Gordon",
@@ -1360,7 +1360,7 @@
     "code": "USA",
     "group": "D",
     "confederation": "CONCACAF",
-    "flag_url": null,
+    "flag_code": "us",
     "players": [
       {
         "name": "Chris Brady",
@@ -1473,7 +1473,7 @@
     "code": "PAR",
     "group": "D",
     "confederation": "CONMEBOL",
-    "flag_url": null,
+    "flag_code": "py",
     "players": [
       {
         "name": "Roberto Junior Fernandez",
@@ -1586,7 +1586,7 @@
     "code": "AUS",
     "group": "D",
     "confederation": "AFC",
-    "flag_url": null,
+    "flag_code": "au",
     "players": [
       {
         "name": "Ryan",
@@ -1699,7 +1699,7 @@
     "code": "TUR",
     "group": "D",
     "confederation": "UEFA",
-    "flag_url": null,
+    "flag_code": "tr",
     "players": [
       {
         "name": "Altay Bayindir",
@@ -1812,7 +1812,7 @@
     "code": "GER",
     "group": "E",
     "confederation": "UEFA",
-    "flag_url": null,
+    "flag_code": "de",
     "players": [
       {
         "name": "Oliver Baumann",
@@ -1925,7 +1925,7 @@
     "code": "ECU",
     "group": "E",
     "confederation": "CONMEBOL",
-    "flag_url": null,
+    "flag_code": "ec",
     "players": [
       {
         "name": "Hernan Galindez",
@@ -2026,7 +2026,7 @@
     "code": "CIV",
     "group": "E",
     "confederation": "CAF",
-    "flag_url": null,
+    "flag_code": "ci",
     "players": [
       {
         "name": "Yahia Fofana",
@@ -2139,7 +2139,7 @@
     "code": "CUW",
     "group": "E",
     "confederation": "CONCACAF",
-    "flag_url": null,
+    "flag_code": "cw",
     "players": [
       {
         "name": "Tyrick Bodak",
@@ -2252,7 +2252,7 @@
     "code": "NED",
     "group": "F",
     "confederation": "UEFA",
-    "flag_url": null,
+    "flag_code": "nl",
     "players": [
       {
         "name": "Bart Verbruggen",
@@ -2365,7 +2365,7 @@
     "code": "JPN",
     "group": "F",
     "confederation": "AFC",
-    "flag_url": null,
+    "flag_code": "jp",
     "players": [
       {
         "name": "Tomoki Hayakawa",
@@ -2478,7 +2478,7 @@
     "code": "SWE",
     "group": "F",
     "confederation": "UEFA",
-    "flag_url": null,
+    "flag_code": "se",
     "players": [
       {
         "name": "Viktor Johansson",
@@ -2591,7 +2591,7 @@
     "code": "TUN",
     "group": "F",
     "confederation": "CAF",
-    "flag_url": null,
+    "flag_code": "tn",
     "players": [
       {
         "name": "Sabri Ben Hessen",
@@ -2704,7 +2704,7 @@
     "code": "BEL",
     "group": "G",
     "confederation": "UEFA",
-    "flag_url": null,
+    "flag_code": "be",
     "players": [
       {
         "name": "Thibaut Courtois",
@@ -2817,7 +2817,7 @@
     "code": "EGY",
     "group": "G",
     "confederation": "CAF",
-    "flag_url": null,
+    "flag_code": "eg",
     "players": [
       {
         "name": "Mohamed El Shenawy",
@@ -2934,7 +2934,7 @@
     "code": "IRN",
     "group": "G",
     "confederation": "AFC",
-    "flag_url": null,
+    "flag_code": "ir",
     "players": [
       {
         "name": "Alireza Beiranvand",
@@ -3047,7 +3047,7 @@
     "code": "NZL",
     "group": "G",
     "confederation": "OFC",
-    "flag_url": null,
+    "flag_code": "nz",
     "players": [
       {
         "name": "Max Crocombe",
@@ -3160,7 +3160,7 @@
     "code": "ESP",
     "group": "H",
     "confederation": "UEFA",
-    "flag_url": null,
+    "flag_code": "es",
     "players": [
       {
         "name": "Unai Simon",
@@ -3273,7 +3273,7 @@
     "code": "CPV",
     "group": "H",
     "confederation": "CAF",
-    "flag_url": null,
+    "flag_code": "cv",
     "players": [
       {
         "name": "Vozinha",
@@ -3386,7 +3386,7 @@
     "code": "KSA",
     "group": "H",
     "confederation": "AFC",
-    "flag_url": null,
+    "flag_code": "sa",
     "players": [
       {
         "name": "Mohammed Al Owais",
@@ -3499,7 +3499,7 @@
     "code": "URU",
     "group": "H",
     "confederation": "CONMEBOL",
-    "flag_url": null,
+    "flag_code": "uy",
     "players": [
       {
         "name": "Sergio Rochet",
@@ -3612,7 +3612,7 @@
     "code": "FRA",
     "group": "I",
     "confederation": "UEFA",
-    "flag_url": null,
+    "flag_code": "fr",
     "players": [
       {
         "name": "Mike Maignan",
@@ -3725,7 +3725,7 @@
     "code": "SEN",
     "group": "I",
     "confederation": "CAF",
-    "flag_url": null,
+    "flag_code": "sn",
     "players": [
       {
         "name": "Edouard Mendy",
@@ -3838,7 +3838,7 @@
     "code": "IRQ",
     "group": "I",
     "confederation": "AFC",
-    "flag_url": null,
+    "flag_code": "iq",
     "players": [
       {
         "name": "Fahad Talib",
@@ -3951,7 +3951,7 @@
     "code": "NOR",
     "group": "I",
     "confederation": "UEFA",
-    "flag_url": null,
+    "flag_code": "no",
     "players": [
       {
         "name": "Orjan Haskjold Nyland",
@@ -4064,7 +4064,7 @@
     "code": "ARG",
     "group": "J",
     "confederation": "CONMEBOL",
-    "flag_url": null,
+    "flag_code": "ar",
     "players": [
       {
         "name": "Juan Musso",
@@ -4177,7 +4177,7 @@
     "code": "ALG",
     "group": "J",
     "confederation": "CAF",
-    "flag_url": null,
+    "flag_code": "dz",
     "players": [
       {
         "name": "Oussama ​Benbot",
@@ -4290,7 +4290,7 @@
     "code": "AUT",
     "group": "J",
     "confederation": "UEFA",
-    "flag_url": null,
+    "flag_code": "at",
     "players": [
       {
         "name": "Patrick Pentz",
@@ -4403,7 +4403,7 @@
     "code": "JOR",
     "group": "J",
     "confederation": "AFC",
-    "flag_url": null,
+    "flag_code": "jo",
     "players": [
       {
         "name": "Yazeed Abulaila",
@@ -4516,7 +4516,7 @@
     "code": "POR",
     "group": "K",
     "confederation": "UEFA",
-    "flag_url": null,
+    "flag_code": "pt",
     "players": [
       {
         "name": "Diogo Costa",
@@ -4633,7 +4633,7 @@
     "code": "COD",
     "group": "K",
     "confederation": "CAF",
-    "flag_url": null,
+    "flag_code": "cd",
     "players": [
       {
         "name": "Matthieu Epolo",
@@ -4746,7 +4746,7 @@
     "code": "UZB",
     "group": "K",
     "confederation": "AFC",
-    "flag_url": null,
+    "flag_code": "uz",
     "players": [
       {
         "name": "Utkir Yusupov",
@@ -4859,7 +4859,7 @@
     "code": "COL",
     "group": "K",
     "confederation": "CONMEBOL",
-    "flag_url": null,
+    "flag_code": "co",
     "players": [
       {
         "name": "Camilo Vargas",
@@ -4972,7 +4972,7 @@
     "code": "ENG",
     "group": "L",
     "confederation": "UEFA",
-    "flag_url": null,
+    "flag_code": "gb-eng",
     "players": [
       {
         "name": "Dean Henderson",
@@ -5085,7 +5085,7 @@
     "code": "CRO",
     "group": "L",
     "confederation": "UEFA",
-    "flag_url": null,
+    "flag_code": "hr",
     "players": [
       {
         "name": "Dominik Livakovic",
@@ -5198,7 +5198,7 @@
     "code": "GHA",
     "group": "L",
     "confederation": "CAF",
-    "flag_url": null,
+    "flag_code": "gh",
     "players": [
       {
         "name": "Benjamin Asare",
@@ -5311,7 +5311,7 @@
     "code": "PAN",
     "group": "L",
     "confederation": "CONCACAF",
-    "flag_url": null,
+    "flag_code": "pa",
     "players": [
       {
         "name": "Orlando Mosquera",

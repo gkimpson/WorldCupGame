@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8d96a427b2b93893c58a1e17424a6bd7",
+    "content-hash": "a4d57ca8a6e91de8d5b6d062de83ecbc",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -4988,6 +4988,75 @@
                 }
             ],
             "time": "2025-09-03T16:03:54+00:00"
+        },
+        {
+            "name": "outhebox/blade-flags",
+            "version": "1.7.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/MohmmedAshraf/blade-flags.git",
+                "reference": "00574e523f179d5a64dec555bea4dfd9ea9cd463"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/MohmmedAshraf/blade-flags/zipball/00574e523f179d5a64dec555bea4dfd9ea9cd463",
+                "reference": "00574e523f179d5a64dec555bea4dfd9ea9cd463",
+                "shasum": ""
+            },
+            "require": {
+                "blade-ui-kit/blade-icons": "^1.1",
+                "ext-json": "*",
+                "illuminate/support": "^8.0|^9.0|^10.0|^11.0|^12.0|^13.0",
+                "php": "^7.4|^8.0|^8.1|^8.2"
+            },
+            "require-dev": {
+                "orchestra/testbench": "^6.0|^7.0|^8.0|^9.0|^10.0|^11.0",
+                "phpunit/phpunit": "^9.0|^10.5|^11.5.3|^12.5.12"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "OutheBox\\BladeFlags\\BladeFlagsServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "OutheBox\\BladeFlags\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Mohamed Ashraf",
+                    "email": "cupo.ashraf@gmail.com",
+                    "homepage": "https://github.com/MohmmedAshraf"
+                }
+            ],
+            "description": "A package to easily make use of country & language flags in your Laravel Blade views.",
+            "homepage": "https://github.com/MohmmedAshraf/blade-flags",
+            "keywords": [
+                "blade",
+                "country flags",
+                "flags",
+                "language flags",
+                "laravel"
+            ],
+            "support": {
+                "issues": "https://github.com/MohmmedAshraf/blade-flags/issues",
+                "source": "https://github.com/MohmmedAshraf/blade-flags/tree/1.7.0"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/MohmmedAshraf",
+                    "type": "github"
+                }
+            ],
+            "time": "2026-03-01T17:25:55+00:00"
         },
         {
             "name": "paragonie/constant_time_encoding",

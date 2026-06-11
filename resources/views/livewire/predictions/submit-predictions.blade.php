@@ -17,11 +17,10 @@
                                 $awayName = $fixture->awayTeam?->name ?? $fixture->away_team_placeholder ?? 'TBD';
                             @endphp
 
-                            <div
-                                wire:key="fixture-{{ $fixture->id }}"
-                                class="flex items-center gap-3 px-4 py-3 {{ $locked ? 'opacity-50' : '' }}"
-                            >
-                                <span class="min-w-0 flex-1 truncate text-right text-sm font-medium">{{ $homeName }}</span>
+                            <div wire:key="fixture-{{ $fixture->id }}" class="grid grid-cols-[minmax(0,1fr)_1.25rem_auto_1.25rem_minmax(0,1fr)] items-center gap-2 px-4 py-3 sm:grid-cols-[minmax(0,1fr)_1.25rem_auto_1.25rem_minmax(0,1fr)_5rem] sm:gap-3 {{ $locked ? 'opacity-50' : '' }}">
+                                <span class="min-w-0 truncate text-right text-sm font-medium">{{ $homeName }}</span>
+
+                                <x-team-flag :team="$fixture->homeTeam" class="justify-self-end" />
 
                                 <div class="flex shrink-0 items-center gap-1.5">
                                     <flux:input
@@ -45,10 +44,12 @@
                                     />
                                 </div>
 
-                                <span class="min-w-0 flex-1 truncate text-sm font-medium">{{ $awayName }}</span>
+                                <x-team-flag :team="$fixture->awayTeam" class="justify-self-start" />
+
+                                <span class="min-w-0 truncate text-sm font-medium">{{ $awayName }}</span>
 
                                 @if ($fixture->scheduled_at !== null)
-                                    <span class="hidden shrink-0 text-xs text-zinc-400 sm:inline">
+                                    <span class="hidden shrink-0 justify-self-end text-xs text-zinc-400 sm:inline">
                                         {{ $fixture->scheduled_at->format('d M H:i') }}
                                     </span>
                                 @endif

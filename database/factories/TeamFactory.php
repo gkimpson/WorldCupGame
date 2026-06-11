@@ -26,7 +26,7 @@ class TeamFactory extends Factory
             'slug' => Str::slug($name),
             'group' => fake()->optional()->randomElement(['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L']),
             'confederation' => fake()->optional()->randomElement(['UEFA', 'CONMEBOL', 'CONCACAF', 'CAF', 'AFC', 'OFC']),
-            'flag_url' => null,
+            'flag_code' => null,
         ];
     }
 }

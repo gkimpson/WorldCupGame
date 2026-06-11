@@ -22,6 +22,7 @@ it('seeds teams and players from a json file', function () {
             'name' => 'Brazil',
             'code' => 'BRA',
             'group' => 'A',
+            'flag_code' => 'br',
             'players' => [
                 ['name' => 'Alisson', 'position' => 'Goalkeeper', 'shirt_number' => 1],
                 ['name' => 'Neymar', 'position' => 'Forward', 'shirt_number' => 10],
@@ -37,7 +38,8 @@ it('seeds teams and players from a json file', function () {
     $brazil = Team::firstWhere('code', 'BRA');
     expect($brazil->name)->toBe('Brazil')
         ->and($brazil->slug)->toBe('brazil')
-        ->and($brazil->group)->toBe('A');
+        ->and($brazil->group)->toBe('A')
+        ->and($brazil->flag_code)->toBe('br');
 
     $alisson = Player::firstWhere('name', 'Alisson');
     expect($alisson->position)->toBe(PlayerPosition::Goalkeeper)
@@ -61,4 +63,26 @@ it('is idempotent across repeated runs', function () {
 
     expect(Team::count())->toBe(1)
         ->and(Player::count())->toBe(1);
+});
+
+it('committed squad data includes a blade flags code for every team', function () {
+    /** @var array<int, array{name: string, flag_code: string|null}> $squads */
+    $squads = json_decode((string) file_get_contents(resource_path('data/squads.json')), true, flags: JSON_THROW_ON_ERROR);
+
+    $teamsMissingFlags = collect($squads)
+        ->filter(fn (array $squad): bool => blank($squad['flag_code'] ?? null))
+        ->pluck('name');
+
+    expect($teamsMissingFlags)->toBeEmpty();
+});
+
+it('committed squad data only references blade flags icons that exist', function () {
+    /** @var array<int, array{name: string, flag_code: string}> $squads */
+    $squads = json_decode((string) file_get_contents(resource_path('data/squads.json')), true, flags: JSON_THROW_ON_ERROR);
+
+    $teamsMissingIcons = collect($squads)
+        ->filter(fn (array $squad): bool => ! is_file(base_path("vendor/outhebox/blade-flags/resources/svg/country-{$squad['flag_code']}.svg")))
+        ->pluck('name');
+
+    expect($teamsMissingIcons)->toBeEmpty();
 });
