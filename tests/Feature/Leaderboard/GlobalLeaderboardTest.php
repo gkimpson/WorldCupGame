@@ -20,6 +20,18 @@ it('shows users ordered by total points descending', function () {
         ->assertSeeInOrder(['Alice', 'Bob']);
 });
 
+it('excludes dummy users', function () {
+    $realUser = User::factory()->create(['name' => 'Real User']);
+    $dummyUser = User::factory()->dummy()->create(['name' => 'Dummy User']);
+
+    UserStat::factory()->withPoints(10)->create(['user_id' => $realUser->id]);
+    UserStat::factory()->withPoints(999)->create(['user_id' => $dummyUser->id]);
+
+    Livewire::test(GlobalLeaderboard::class)
+        ->assertSee('Real User')
+        ->assertDontSee('Dummy User');
+});
+
 it('assigns correct ranks starting at 1', function () {
     $user = User::factory()->create(['name' => 'Alice']);
     UserStat::factory()->withPoints(10)->create(['user_id' => $user->id]);

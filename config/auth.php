@@ -63,7 +63,7 @@ return [
 
     'providers' => [
         'users' => [
-            'driver' => 'dummy-aware-eloquent',
+            'driver' => 'eloquent',
             'model' => env('AUTH_MODEL', User::class),
         ],
 

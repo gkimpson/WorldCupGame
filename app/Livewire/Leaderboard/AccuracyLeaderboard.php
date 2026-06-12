@@ -12,9 +12,11 @@ class AccuracyLeaderboard extends Component
 {
     public function render(): View
     {
-        $userId = auth()->id();
+        $user = auth()->user();
+        $userId = $user?->is_dummy ? null : $user?->id;
 
-        $stats = UserStat::with('user')
+        $stats = UserStat::forRealUsers()
+            ->with('user')
             ->orderBy('correct_outcomes', 'desc')
             ->orderBy('predictions_made', 'asc')
             ->orderBy('id', 'asc')
@@ -39,13 +41,15 @@ class AccuracyLeaderboard extends Component
 
         $pinnedEntry = null;
         if ($userId !== null && ! $inTop100) {
-            $userStat = UserStat::where('user_id', $userId)->first();
+            $userStat = UserStat::forRealUsers()->where('user_id', $userId)->first();
             if ($userStat !== null) {
-                $rank = UserStat::where('correct_outcomes', '>', $userStat->correct_outcomes)->count()
-                    + UserStat::where('correct_outcomes', $userStat->correct_outcomes)
+                $rank = UserStat::forRealUsers()->where('correct_outcomes', '>', $userStat->correct_outcomes)->count()
+                    + UserStat::forRealUsers()
+                        ->where('correct_outcomes', $userStat->correct_outcomes)
                         ->where('predictions_made', '<', $userStat->predictions_made)
                         ->count()
-                    + UserStat::where('correct_outcomes', $userStat->correct_outcomes)
+                    + UserStat::forRealUsers()
+                        ->where('correct_outcomes', $userStat->correct_outcomes)
                         ->where('predictions_made', $userStat->predictions_made)
                         ->where('id', '<', $userStat->id)
                         ->count()
@@ -57,7 +61,7 @@ class AccuracyLeaderboard extends Component
 
                 $pinnedEntry = [
                     'rank' => $rank,
-                    'name' => auth()->user()->name,
+                    'name' => $user->name,
                     'correct_outcomes' => $userStat->correct_outcomes,
                     'predictions_made' => $userStat->predictions_made,
                     'accuracy_pct' => $accuracyPct,

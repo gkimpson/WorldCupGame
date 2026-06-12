@@ -49,7 +49,7 @@ class EnsureDefaultPredictions
 
         $created = 0;
 
-        User::query()
+        User::notDummy()
             ->whereDoesntHave('roles', fn (Builder $query) => $query->where('name', 'admin'))
             ->whereDoesntHave('predictions', function (Builder $query) use ($fixture): void {
                 $query->where('fixture_id', $fixture->id);

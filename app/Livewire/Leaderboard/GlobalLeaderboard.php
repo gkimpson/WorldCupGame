@@ -12,9 +12,11 @@ class GlobalLeaderboard extends Component
 {
     public function render(): View
     {
-        $userId = auth()->id();
+        $user = auth()->user();
+        $userId = $user?->is_dummy ? null : $user?->id;
 
-        $stats = UserStat::with('user')
+        $stats = UserStat::forRealUsers()
+            ->with('user')
             ->orderBy('total_points', 'desc')
             ->orderBy('id', 'asc')
             ->limit(100)
@@ -33,17 +35,18 @@ class GlobalLeaderboard extends Component
 
         $pinnedEntry = null;
         if ($userId !== null && ! $inTop100) {
-            $userStat = UserStat::where('user_id', $userId)->first();
+            $userStat = UserStat::forRealUsers()->where('user_id', $userId)->first();
             if ($userStat !== null) {
-                $rank = UserStat::where('total_points', '>', $userStat->total_points)->count()
-                    + UserStat::where('total_points', $userStat->total_points)
+                $rank = UserStat::forRealUsers()->where('total_points', '>', $userStat->total_points)->count()
+                    + UserStat::forRealUsers()
+                        ->where('total_points', $userStat->total_points)
                         ->where('id', '<', $userStat->id)
                         ->count()
                     + 1;
 
                 $pinnedEntry = [
                     'rank' => $rank,
-                    'name' => auth()->user()->name,
+                    'name' => $user->name,
                     'total_points' => $userStat->total_points,
                     'predictions_made' => $userStat->predictions_made,
                 ];

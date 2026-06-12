@@ -92,3 +92,18 @@ it('creates and scores a default nil nil prediction for users who missed the dea
         ->and($prediction->away_score)->toBe(0)
         ->and($prediction->points)->toBe(3);
 });
+
+it('does not create default predictions for dummy users', function () {
+    $realUser = User::factory()->create();
+    $dummyUser = User::factory()->dummy()->create();
+    $fixture = Fixture::factory()->completed()->create([
+        'scheduled_at' => now()->subDay(),
+        'home_score' => 0,
+        'away_score' => 0,
+    ]);
+
+    event(new ResultImported($fixture));
+
+    expect(Prediction::where('user_id', $realUser->id)->where('fixture_id', $fixture->id)->exists())->toBeTrue()
+        ->and(Prediction::where('user_id', $dummyUser->id)->where('fixture_id', $fixture->id)->exists())->toBeFalse();
+});

@@ -12,9 +12,11 @@ class PerfectLeaderboard extends Component
 {
     public function render(): View
     {
-        $userId = auth()->id();
+        $user = auth()->user();
+        $userId = $user?->is_dummy ? null : $user?->id;
 
-        $stats = UserStat::with('user')
+        $stats = UserStat::forRealUsers()
+            ->with('user')
             ->orderBy('exact_scores', 'desc')
             ->orderBy('total_points', 'desc')
             ->orderBy('id', 'asc')
@@ -35,13 +37,15 @@ class PerfectLeaderboard extends Component
 
         $pinnedEntry = null;
         if ($userId !== null && ! $inTop100) {
-            $userStat = UserStat::where('user_id', $userId)->first();
+            $userStat = UserStat::forRealUsers()->where('user_id', $userId)->first();
             if ($userStat !== null) {
-                $rank = UserStat::where('exact_scores', '>', $userStat->exact_scores)->count()
-                    + UserStat::where('exact_scores', $userStat->exact_scores)
+                $rank = UserStat::forRealUsers()->where('exact_scores', '>', $userStat->exact_scores)->count()
+                    + UserStat::forRealUsers()
+                        ->where('exact_scores', $userStat->exact_scores)
                         ->where('total_points', '>', $userStat->total_points)
                         ->count()
-                    + UserStat::where('exact_scores', $userStat->exact_scores)
+                    + UserStat::forRealUsers()
+                        ->where('exact_scores', $userStat->exact_scores)
                         ->where('total_points', $userStat->total_points)
                         ->where('id', '<', $userStat->id)
                         ->count()
@@ -49,7 +53,7 @@ class PerfectLeaderboard extends Component
 
                 $pinnedEntry = [
                     'rank' => $rank,
-                    'name' => auth()->user()->name,
+                    'name' => $user->name,
                     'exact_scores' => $userStat->exact_scores,
                     'total_points' => $userStat->total_points,
                     'predictions_made' => $userStat->predictions_made,

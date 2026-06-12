@@ -3,12 +3,13 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
-use App\Models\Scopes\ExcludeDummyUsersScope;
 use Database\Factories\UserFactory;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
+use Illuminate\Database\Eloquent\Attributes\Scope;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -38,11 +39,6 @@ class User extends Authenticatable implements FilamentUser
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, HasRoles, Notifiable;
-
-    protected static function booted(): void
-    {
-        static::addGlobalScope(new ExcludeDummyUsersScope);
-    }
 
     /**
      * Get the attributes that should be cast.
@@ -85,6 +81,13 @@ class User extends Authenticatable implements FilamentUser
     public function leagueMemberships(): HasMany
     {
         return $this->hasMany(LeagueMember::class);
+    }
+
+    /** @param Builder<User> $query */
+    #[Scope]
+    protected function notDummy(Builder $query): void
+    {
+        $query->where('is_dummy', false);
     }
 
     /**

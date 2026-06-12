@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Database\Factories\UserStatFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\Scope;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -43,5 +45,12 @@ class UserStat extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    /** @param Builder<UserStat> $query */
+    #[Scope]
+    protected function forRealUsers(Builder $query): void
+    {
+        $query->whereHas('user', fn (Builder $query) => $query->where('is_dummy', false));
     }
 }

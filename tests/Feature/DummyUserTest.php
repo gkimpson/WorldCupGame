@@ -1,35 +1,30 @@
 <?php
 
-use App\Models\Scopes\ExcludeDummyUsersScope;
 use App\Models\User;
 
-it('excludes dummy users from default queries', function () {
+it('does not hide dummy users from default auth model queries', function () {
     User::factory()->create(['name' => 'Real User']);
     User::factory()->dummy()->create(['name' => 'Dummy User']);
 
     $users = User::all();
 
-    expect($users)->toHaveCount(1)
-        ->and($users->first()->name)->toBe('Real User');
+    expect($users)->toHaveCount(2);
 });
 
-it('includes dummy users when scope is removed', function () {
+it('scopes queries to non-dummy users when requested', function () {
     User::factory()->create(['name' => 'Real User']);
     User::factory()->dummy()->create(['name' => 'Dummy User']);
 
-    $users = User::withoutGlobalScope(ExcludeDummyUsersScope::class)->get();
+    $users = User::notDummy()->get();
 
-    expect($users)->toHaveCount(2);
+    expect($users)->toHaveCount(1)
+        ->and($users->first()->name)->toBe('Real User');
 });
 
 it('sets is_dummy to true via the dummy factory state', function () {
     $user = User::factory()->dummy()->create();
 
-    expect(
-        User::withoutGlobalScope(ExcludeDummyUsersScope::class)
-            ->find($user->id)
-            ->is_dummy
-    )->toBeTrue();
+    expect($user->refresh()->is_dummy)->toBeTrue();
 });
 
 it('sets is_dummy to false by default', function () {

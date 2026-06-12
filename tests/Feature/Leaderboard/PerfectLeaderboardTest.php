@@ -22,6 +22,19 @@ it('orders entries by exact_scores descending', function () {
         ->and($entries[1]['name'])->toBe($userB->name);
 });
 
+it('excludes dummy users', function () {
+    $realUser = User::factory()->create();
+    $dummyUser = User::factory()->dummy()->create(['name' => 'Dummy User']);
+
+    UserStat::factory()->withAccuracy(10, 3, 20, 15)->create(['user_id' => $realUser->id]);
+    UserStat::factory()->withAccuracy(99, 99, 100, 50)->create(['user_id' => $dummyUser->id]);
+
+    $entries = Livewire::test(PerfectLeaderboard::class)->viewData('topEntries');
+
+    expect(array_column($entries, 'name'))->toContain($realUser->name)
+        ->not->toContain('Dummy User');
+});
+
 it('breaks ties by total_points descending', function () {
     $userA = User::factory()->create();
     $userB = User::factory()->create();

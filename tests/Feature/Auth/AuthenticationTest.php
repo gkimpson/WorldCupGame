@@ -26,7 +26,7 @@ test('users can authenticate using the login screen', function () {
     $this->assertAuthenticated();
 });
 
-test('dummy admin users can authenticate for filament', function () {
+test('dummy admin users can authenticate for filament using the default eloquent provider', function () {
     Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'web']);
 
     $user = User::factory()
@@ -36,6 +36,8 @@ test('dummy admin users can authenticate for filament', function () {
         ]);
 
     $user->assignRole('admin');
+
+    expect(config('auth.providers.users.driver'))->toBe('eloquent');
 
     expect(auth()->attemptWhen(
         [
