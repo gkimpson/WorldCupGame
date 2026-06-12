@@ -96,3 +96,19 @@ it('maps null scores for a scheduled fixture', function (): void {
         ->and($dto->homeScore)->toBeNull()
         ->and($dto->awayScore)->toBeNull();
 });
+
+it('uses live goals score for in-progress fixture', function (): void {
+    $dto = makeMapper()->map(sampleItem([
+        'fixture' => ['status' => ['short' => '2H']],
+        'goals' => ['home' => 1, 'away' => 0],
+        'score' => [
+            'fulltime' => ['home' => null, 'away' => null],
+            'extratime' => ['home' => null, 'away' => null],
+            'penalty' => ['home' => null, 'away' => null],
+        ],
+    ]));
+
+    expect($dto->status)->toBe(FixtureStatus::InProgress)
+        ->and($dto->homeScore)->toBe(1)
+        ->and($dto->awayScore)->toBe(0);
+});

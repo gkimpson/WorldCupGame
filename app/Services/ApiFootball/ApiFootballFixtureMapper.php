@@ -23,6 +23,8 @@ final class ApiFootballFixtureMapper
         $status = $this->statusMapper->map($fixture['status']['short']);
         $stage = $this->stageMapper->map($item['league']['round']);
 
+        // For completed fixtures, fulltime score is definitive.
+        // For in-progress fixtures, fulltime is null so goals holds the live score.
         $homeScore = $score['fulltime']['home'] ?? $goals['home'];
         $awayScore = $score['fulltime']['away'] ?? $goals['away'];
 
