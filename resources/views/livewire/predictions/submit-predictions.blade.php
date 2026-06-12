@@ -65,7 +65,9 @@
 
                                 {{-- Desktop: home name, home flag, scores, away flag, away name --}}
                                 <span class="hidden min-w-0 truncate text-right text-sm font-medium sm:block">{{ $homeName }}</span>
-                                <x-team-flag :team="$fixture->homeTeam" class="hidden justify-self-end sm:block" />
+                                <div class="hidden sm:flex sm:items-center sm:justify-end">
+                                    <x-team-flag :team="$fixture->homeTeam" />
+                                </div>
 
                                 <div class="hidden shrink-0 items-center gap-1.5 sm:flex">
                                     <flux:input
@@ -89,7 +91,9 @@
                                     />
                                 </div>
 
-                                <x-team-flag :team="$fixture->awayTeam" class="hidden justify-self-start sm:block" />
+                                <div class="hidden sm:flex sm:items-center">
+                                    <x-team-flag :team="$fixture->awayTeam" />
+                                </div>
                                 <span class="hidden min-w-0 truncate text-sm font-medium sm:block">{{ $awayName }}</span>
 
                                 {{-- Action --}}
