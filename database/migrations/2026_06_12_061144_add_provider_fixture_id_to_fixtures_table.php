@@ -22,6 +22,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('fixtures', function (Blueprint $table): void {
+            $table->dropUnique(['provider_fixture_id']);
             $table->dropColumn('provider_fixture_id');
         });
     }

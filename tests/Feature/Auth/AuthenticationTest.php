@@ -1,7 +1,9 @@
 <?php
 
 use App\Models\User;
+use Filament\Facades\Filament;
 use Laravel\Fortify\Features;
+use Spatie\Permission\Models\Role;
 
 test('login screen can be rendered', function () {
     $response = $this->get(route('login'));
@@ -22,6 +24,28 @@ test('users can authenticate using the login screen', function () {
         ->assertRedirect(route('dashboard', absolute: false));
 
     $this->assertAuthenticated();
+});
+
+test('dummy admin users can authenticate for filament', function () {
+    Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'web']);
+
+    $user = User::factory()
+        ->dummy()
+        ->create([
+            'password' => 'password',
+        ]);
+
+    $user->assignRole('admin');
+
+    expect(auth()->attemptWhen(
+        [
+            'email' => $user->email,
+            'password' => 'password',
+        ],
+        fn (User $user): bool => $user->canAccessPanel(Filament::getPanel('admin')),
+    ))->toBeTrue();
+
+    $this->assertAuthenticatedAs($user);
 });
 
 test('users can not authenticate with invalid password', function () {
