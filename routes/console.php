@@ -9,6 +9,6 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote');
 
 Schedule::command('world-cup:sync-fixtures')
-    ->everySixHours()
+    ->hourly()
     ->withoutOverlapping()
     ->runInBackground();

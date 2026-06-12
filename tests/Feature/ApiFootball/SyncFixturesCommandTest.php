@@ -2,6 +2,7 @@
 
 use App\Models\Fixture;
 use App\Models\Team;
+use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Support\Facades\Http;
 
 function fakeApiResponse(int $fixtureId = 1234): array
@@ -69,4 +70,14 @@ it('returns failure when the API call fails', function (): void {
     $this->artisan('world-cup:sync-fixtures')
         ->assertFailed()
         ->expectsOutputToContain('Sync failed');
+});
+
+it('schedules fixture sync hourly to stay within the free API request budget', function (): void {
+    $event = collect(app(Schedule::class)->events())
+        ->first(fn ($event): bool => str_contains((string) $event->command, 'world-cup:sync-fixtures'));
+
+    expect($event)->not->toBeNull()
+        ->and($event->expression)->toBe('0 * * * *')
+        ->and($event->withoutOverlapping)->toBeTrue()
+        ->and($event->runInBackground)->toBeTrue();
 });
