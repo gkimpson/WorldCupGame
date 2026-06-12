@@ -15,6 +15,7 @@ use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
+ * @property int|null $provider_fixture_id
  * @property int|null $home_team_id
  * @property int|null $away_team_id
  * @property string|null $home_team_placeholder
@@ -36,6 +37,7 @@ use Illuminate\Support\Carbon;
  * @property int|null $away_score_pens
  */
 #[Fillable([
+    'provider_fixture_id',
     'home_team_id', 'away_team_id',
     'home_team_placeholder', 'away_team_placeholder',
     'stage', 'group', 'match_number',
@@ -57,6 +59,7 @@ class Fixture extends Model
     protected function casts(): array
     {
         return [
+            'provider_fixture_id' => 'integer',
             'stage' => FixtureStage::class,
             'status' => FixtureStatus::class,
             'is_locked' => 'boolean',
