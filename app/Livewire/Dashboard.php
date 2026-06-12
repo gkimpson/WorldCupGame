@@ -23,8 +23,10 @@ class Dashboard extends Component
 
     public int $predictionsMade = 0;
 
+    /** @var Collection<int, Fixture> */
     public Collection $upcomingFixtures;
 
+    /** @var Collection<int, Prediction> */
     public Collection $recentResults;
 
     public ?League $topLeague = null;
@@ -39,13 +41,13 @@ class Dashboard extends Component
 
         $userStat = UserStat::where('user_id', $user->id)->first();
 
-        $this->predictionsMade = Prediction::where('user_id', $user->id)->count();
-        $this->hasAnyPredictions = $this->predictionsMade > 0;
-
         if ($userStat !== null) {
             $this->totalPoints = $userStat->total_points;
+            $this->predictionsMade = $userStat->predictions_made;
             $this->globalRank = UserStat::where('total_points', '>', $this->totalPoints)->count() + 1;
         }
+
+        $this->hasAnyPredictions = $this->predictionsMade > 0;
 
         $this->upcomingFixtures = Fixture::where('scheduled_at', '>', now())
             ->where('status', '!=', FixtureStatus::Completed)

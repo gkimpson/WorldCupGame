@@ -64,6 +64,8 @@ it('updates an existing prediction for an unlocked fixture', function () {
 });
 
 it('keeps the default nil nil prediction for locked fixtures', function () {
+    config(['predictions.lock_minutes_before_kickoff' => 120]);
+
     $user = User::factory()->create();
     $fixture = Fixture::factory()->create(['scheduled_at' => now()->addHour()]); // within 2-hour lock window
 
@@ -81,6 +83,8 @@ it('keeps the default nil nil prediction for locked fixtures', function () {
 });
 
 it('dims locked fixture rows and disables their score inputs', function () {
+    config(['predictions.lock_minutes_before_kickoff' => 120]);
+
     $user = User::factory()->create();
     Fixture::factory()->create(['scheduled_at' => now()->addHour()]);
 

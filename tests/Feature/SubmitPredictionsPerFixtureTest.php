@@ -64,6 +64,8 @@ it('marks the fixture as saved in savedFixtures after saveFixture', function () 
 });
 
 it('rejects saveFixture for a locked fixture', function () {
+    config(['predictions.lock_minutes_before_kickoff' => 120]);
+
     $user = User::factory()->create();
     $fixture = Fixture::factory()->create(['scheduled_at' => now()->addHour()]); // within 2-hour lock window
 

@@ -215,13 +215,13 @@ class DevSeedPrivateLeague extends Command
         $entries = LeagueMember::with(['user.stat'])
             ->where('league_id', $league->id)
             ->get()
-            ->sortByDesc(fn (LeagueMember $m) => $m->user->stat?->total_points ?? 0)
+            ->sortByDesc(fn (LeagueMember $m) => $m->user->stat->total_points ?? 0)
             ->values()
             ->map(fn (LeagueMember $m, int $i) => [
                 (string) ($i + 1),
                 $m->user->name.($m->role === LeagueMemberRole::Owner ? ' 👑' : ''),
-                (string) ($m->user->stat?->total_points ?? 0),
-                ($m->user->stat?->predictions_made ?? 0).' / '.Fixture::TOTAL_WORLD_CUP_MATCHES,
+                (string) ($m->user->stat->total_points ?? 0),
+                ($m->user->stat->predictions_made ?? 0).' / '.Fixture::TOTAL_WORLD_CUP_MATCHES,
             ]);
 
         $this->table(['#', 'Player', 'Points', 'Scored'], $entries);

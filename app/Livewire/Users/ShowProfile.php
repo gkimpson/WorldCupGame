@@ -29,6 +29,7 @@ class ShowProfile extends Component
 
     public float $accuracyPct = 0.0;
 
+    /** @var Collection<int, Prediction> */
     public Collection $recentResults;
 
     public function mount(User $user): void

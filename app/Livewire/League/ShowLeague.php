@@ -31,8 +31,8 @@ class ShowLeague extends Component
             ->where('league_id', $this->league->id)
             ->get()
             ->sort(function (LeagueMember $firstMember, LeagueMember $secondMember): int {
-                $firstPoints = $firstMember->user->stat?->total_points ?? 0;
-                $secondPoints = $secondMember->user->stat?->total_points ?? 0;
+                $firstPoints = $firstMember->user->stat->total_points ?? 0;
+                $secondPoints = $secondMember->user->stat->total_points ?? 0;
 
                 if ($firstPoints !== $secondPoints) {
                     return $secondPoints <=> $firstPoints;
@@ -46,8 +46,8 @@ class ShowLeague extends Component
             'entries' => $members->map(fn (LeagueMember $member, int $index): array => [
                 'rank' => $index + 1,
                 'name' => $member->user->name,
-                'total_points' => $member->user->stat?->total_points ?? 0,
-                'predictions_made' => $member->user->stat?->predictions_made ?? 0,
+                'total_points' => $member->user->stat->total_points ?? 0,
+                'predictions_made' => $member->user->stat->predictions_made ?? 0,
                 'role' => $member->role->label(),
                 'is_current_user' => $member->user_id === Auth::id(),
             ])->all(),
