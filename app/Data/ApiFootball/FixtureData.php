@@ -11,7 +11,9 @@ final readonly class FixtureData
     public function __construct(
         public int $providerFixtureId,
         public string $homeTeamName,
+        public ?int $homeTeamExternalId,
         public string $awayTeamName,
+        public ?int $awayTeamExternalId,
         public CarbonImmutable $scheduledAt,
         public FixtureStatus $status,
         public FixtureStage $stage,
