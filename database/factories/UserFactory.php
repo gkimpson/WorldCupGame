@@ -47,4 +47,14 @@ class UserFactory extends Factory
      * Indicate that the model has two-factor authentication configured.
      */
     public function withTwoFactor(): static {}
+
+    /**
+     * Indicate that this is a dummy user (hidden from the app).
+     */
+    public function dummy(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'is_dummy' => true,
+        ]);
+    }
 }
