@@ -5,6 +5,8 @@ namespace App\Providers;
 use App\Events\ResultImported;
 use App\Listeners\RecalculateFixturePredictions;
 use App\Listeners\RecalculateUserStats;
+use App\Services\ApiFootball\ApiFootballClient;
+use App\Services\ApiFootball\Contracts\FootballDataProviderInterface;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
@@ -19,7 +21,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->bind(FootballDataProviderInterface::class, ApiFootballClient::class);
     }
 
     /**
