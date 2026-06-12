@@ -15,6 +15,9 @@ use Illuminate\Database\Eloquent\Model;
 #[Fillable(['name', 'slug', 'provider_league_id', 'season'])]
 class Competition extends Model
 {
+    /**
+     * @return array<string, string>
+     */
     protected function casts(): array
     {
         return [
