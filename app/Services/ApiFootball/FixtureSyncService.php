@@ -98,9 +98,11 @@ final class FixtureSyncService
 
         if ($id === null) {
             Log::warning('ApiFootball: team not found in local database', ['name' => $name]);
+
+            return null;
         }
 
-        return $id;
+        return (int) $id;
     }
 
     /** @return Collection<string, int> */
