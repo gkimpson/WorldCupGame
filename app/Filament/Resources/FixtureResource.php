@@ -23,6 +23,8 @@ class FixtureResource extends Resource
 
     protected static ?string $navigationLabel = 'Fixtures';
 
+    protected static \UnitEnum|string|null $navigationGroup = 'Competition';
+
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
