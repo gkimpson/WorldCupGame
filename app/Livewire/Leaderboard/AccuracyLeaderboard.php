@@ -6,6 +6,7 @@ use App\Models\Fixture;
 use App\Models\UserStat;
 use App\Models\UserWeeklyStat;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\View\View;
 use Livewire\Attributes\Title;
@@ -21,7 +22,12 @@ class AccuracyLeaderboard extends Component
     public function mount(): void
     {
         if ($this->week === null) {
-            $this->week = $this->availableWeeks()->last();
+            $available = $this->availableWeeks();
+            if ($available->isNotEmpty()) {
+                $dayOffset = (int) Carbon::parse('2026-06-11')->diffInDays(now()->startOfDay(), false);
+                $currentWeek = max(1, (int) floor($dayOffset / 7) + 1);
+                $this->week = $available->contains($currentWeek) ? $currentWeek : $available->first();
+            }
         }
     }
 

@@ -20,18 +20,31 @@ function seedWeeks(array $weekNumbers): User
     return $user;
 }
 
-it('defaults to the most recent available week on mount', function () {
+it('defaults to the current tournament week on mount', function () {
     seedWeeks([1, 2, 3]);
 
+    // Freeze time in week 2 (2026-06-18 = day 7 → week 2)
+    $this->travelTo(now()->parse('2026-06-18'));
+
     Livewire::test(GlobalLeaderboard::class)
-        ->assertSet('week', 3);
+        ->assertSet('week', 2);
+});
+
+it('falls back to the first available week when the current week has no data', function () {
+    seedWeeks([2, 3]);
+
+    // Week 1 has no data; current date is in week 1
+    $this->travelTo(now()->parse('2026-06-13'));
+
+    Livewire::test(GlobalLeaderboard::class)
+        ->assertSet('week', 2);
 });
 
 it('navigates to the previous week', function () {
     seedWeeks([1, 2, 3]);
 
     Livewire::test(GlobalLeaderboard::class)
-        ->assertSet('week', 3)
+        ->set('week', 3)
         ->call('previousWeek')
         ->assertSet('week', 2);
 });
