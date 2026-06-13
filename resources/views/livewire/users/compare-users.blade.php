@@ -215,6 +215,20 @@
             <flux:text class="text-center text-zinc-400">No completed matches with scored predictions yet.</flux:text>
         @endif
 
+        {{-- Compact Prediction Heatmaps --}}
+        @if ($userA && $userB)
+            <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+                <div>
+                    <flux:heading size="sm" class="mb-2">{{ $userA->name }}'s Heatmap</flux:heading>
+                    <livewire:users.prediction-heatmap :user="$userA" :compact="true" :key="'heatmap-a-'.$userA->id" />
+                </div>
+                <div>
+                    <flux:heading size="sm" class="mb-2">{{ $userB->name }}'s Heatmap</flux:heading>
+                    <livewire:users.prediction-heatmap :user="$userB" :compact="true" :key="'heatmap-b-'.$userB->id" />
+                </div>
+            </div>
+        @endif
+
     @endif
 
 </div>

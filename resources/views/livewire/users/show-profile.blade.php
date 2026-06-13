@@ -102,4 +102,7 @@
         @endforelse
     </flux:card>
 
+    {{-- Prediction Heatmap --}}
+    <livewire:users.prediction-heatmap :user="$user" />
+
 </div>
