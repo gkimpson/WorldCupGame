@@ -14,7 +14,8 @@ final class SyncResultsFromGemini extends Command
     protected $signature = 'world-cup:sync-results-gemini
                             {--dry-run : Preview changes without persisting them}
                             {--dummy : Show raw Gemini response and fixture preview without writing to the database}
-                            {--data-only : Hit Gemini directly and dump raw results, skipping all DB interaction}';
+                            {--data-only : Hit Gemini directly and dump raw results, skipping all DB interaction}
+                            {--specific-date= : With --data-only, restrict results to matches played on this date (YYYY-MM-DD)}';
 
     protected $description = 'Fetch World Cup 2026 match results from Gemini AI and update fixtures';
 
@@ -26,8 +27,16 @@ final class SyncResultsFromGemini extends Command
     public function handle(): int
     {
         if ($this->option('data-only')) {
+            $specificDate = $this->option('specific-date');
+
+            if ($specificDate !== null && ! preg_match('/^\d{4}-\d{2}-\d{2}$/', $specificDate)) {
+                $this->error('--specific-date must be in YYYY-MM-DD format (e.g. 2026-06-13).');
+
+                return self::FAILURE;
+            }
+
             try {
-                $raw = $this->gemini->fetchRawResults();
+                $raw = $this->gemini->fetchRawResults($specificDate);
             } catch (RuntimeException $exception) {
                 $this->error($exception->getMessage());
 

@@ -3,6 +3,7 @@
 namespace App\Services\Gemini;
 
 use App\Models\Fixture;
+use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -74,7 +75,7 @@ final class GeminiResultsService
      *
      * @throws RuntimeException
      */
-    public function fetchRawResults(): string
+    public function fetchRawResults(?string $specificDate = null): string
     {
         $response = Http::post(
             self::API_BASE."/{$this->model}:generateContent?key={$this->apiKey}",
@@ -82,7 +83,7 @@ final class GeminiResultsService
                 'contents' => [
                     [
                         'role' => 'user',
-                        'parts' => [['text' => $this->buildRawPrompt()]],
+                        'parts' => [['text' => $this->buildRawPrompt($specificDate)]],
                     ],
                 ],
                 'tools' => [['google_search' => (object) []]],
@@ -105,9 +106,20 @@ final class GeminiResultsService
         return trim((string) $stripped);
     }
 
-    private function buildRawPrompt(): string
+    private function buildRawPrompt(?string $specificDate = null): string
     {
         $today = now()->format('l, F j, Y');
+
+        if ($specificDate !== null) {
+            $label = Carbon::parse($specificDate)->format('l, F j, Y');
+
+            return "Today is {$today}. The FIFA World Cup 2026 is currently underway. "
+                ."Use Google Search to find results ONLY for matches played on {$label} ({$specificDate}). "
+                ."Search for \"FIFA World Cup 2026 results {$specificDate}\" and \"World Cup 2026 scores {$label}\". "
+                .'List every match played on that date with the final score (home team, away team, home score – away score). '
+                .'Do not include matches from any other date. '
+                .'Do not say results are unavailable — search and report what you find.';
+        }
 
         return "Today is {$today}. The FIFA World Cup 2026 is currently underway. "
             .'Use Google Search to find the latest match results right now. '
