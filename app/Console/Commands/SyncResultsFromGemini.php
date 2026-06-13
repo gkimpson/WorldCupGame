@@ -13,7 +13,8 @@ final class SyncResultsFromGemini extends Command
 {
     protected $signature = 'world-cup:sync-results-gemini
                             {--dry-run : Preview changes without persisting them}
-                            {--dummy : Show raw Gemini response and fixture preview without writing to the database}';
+                            {--dummy : Show raw Gemini response and fixture preview without writing to the database}
+                            {--data-only : Hit Gemini directly and dump raw results, skipping all DB interaction}';
 
     protected $description = 'Fetch World Cup 2026 match results from Gemini AI and update fixtures';
 
@@ -24,6 +25,20 @@ final class SyncResultsFromGemini extends Command
 
     public function handle(): int
     {
+        if ($this->option('data-only')) {
+            try {
+                $raw = $this->gemini->fetchRawResults();
+            } catch (RuntimeException $exception) {
+                $this->error($exception->getMessage());
+
+                return self::FAILURE;
+            }
+
+            $this->line($raw);
+
+            return self::SUCCESS;
+        }
+
         $fixtures = Fixture::query()
             ->with(['homeTeam', 'awayTeam'])
             ->where('scheduled_at', '<=', now())

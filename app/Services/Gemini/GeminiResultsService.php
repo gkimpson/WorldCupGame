@@ -68,6 +68,34 @@ final class GeminiResultsService
             ->all();
     }
 
+    /**
+     * Fetch raw World Cup results from Gemini without needing fixture data.
+     * Returns the plain text response from Gemini for direct inspection.
+     *
+     * @throws RuntimeException
+     */
+    public function fetchRawResults(): string
+    {
+        $response = Http::post(
+            self::API_BASE."/{$this->model}:generateContent?key={$this->apiKey}",
+            [
+                'contents' => [
+                    [
+                        'role' => 'user',
+                        'parts' => [['text' => $this->buildRawPrompt()]],
+                    ],
+                ],
+                'tools' => [['google_search' => (object) []]],
+            ],
+        );
+
+        if ($response->failed()) {
+            throw new RuntimeException("Gemini API request failed with status {$response->status()}: {$response->body()}");
+        }
+
+        return (string) data_get($response->json(), 'candidates.0.content.parts.0.text', '');
+    }
+
     /** Strip markdown code fences so json_decode can parse the response text cleanly. */
     private function extractJson(string $text): string
     {
@@ -75,6 +103,18 @@ final class GeminiResultsService
         $stripped = preg_replace('/\s*```\s*$/m', '', (string) $stripped);
 
         return trim((string) $stripped);
+    }
+
+    private function buildRawPrompt(): string
+    {
+        $today = now()->format('l, F j, Y');
+
+        return "Today is {$today}. The FIFA World Cup 2026 is currently underway. "
+            .'Use Google Search to find the latest match results right now. '
+            .'Search for "FIFA World Cup 2026 results today" and "World Cup 2026 scores". '
+            .'List every match that has been played so far with the final score (home team, away team, home score – away score). '
+            .'Include any match currently in progress with the live score. '
+            .'Group results by matchday or round. Do not say results are unavailable — search and report what you find.';
     }
 
     /** @param array<int, array{id: int, home: string, away: string, date: string}> $fixtures */
