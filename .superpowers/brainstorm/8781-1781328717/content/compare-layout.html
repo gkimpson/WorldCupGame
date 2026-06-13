@@ -1,0 +1,93 @@
+<h2>Head-to-Head Comparison Layout</h2>
+<p class="subtitle">How should the compare page be structured?</p>
+
+<div class="cards">
+
+  <div class="card" data-choice="A" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="font-family:sans-serif;font-size:12px;padding:12px;background:#f8f8f8;border-radius:6px;">
+        <div style="display:flex;gap:8px;margin-bottom:10px;">
+          <div style="flex:1;background:#e2e8f0;border-radius:4px;padding:6px 8px;font-size:11px;color:#64748b;">🔍 Search player A…</div>
+          <div style="color:#94a3b8;font-weight:bold;align-self:center;">vs</div>
+          <div style="flex:1;background:#e2e8f0;border-radius:4px;padding:6px 8px;font-size:11px;color:#64748b;">🔍 Search player B…</div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:6px;margin-bottom:8px;">
+          <div style="background:#fff;border:1px solid #e2e8f0;border-radius:4px;padding:8px;text-align:center;">
+            <div style="font-weight:bold;font-size:13px;">Alice</div>
+            <div style="font-size:10px;color:#64748b;">Rank #3</div>
+          </div>
+          <div style="color:#94a3b8;font-weight:bold;align-self:center;font-size:11px;">vs</div>
+          <div style="background:#fff;border:1px solid #e2e8f0;border-radius:4px;padding:8px;text-align:center;">
+            <div style="font-weight:bold;font-size:13px;">Bob</div>
+            <div style="font-size:10px;color:#64748b;">Rank #7</div>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:4px;margin-bottom:8px;">
+          <div style="background:#fef3c7;border-radius:4px;padding:6px;text-align:center;font-size:11px;font-weight:bold;">142 pts</div>
+          <div style="font-size:9px;color:#94a3b8;align-self:center;">pts</div>
+          <div style="background:#e0f2fe;border-radius:4px;padding:6px;text-align:center;font-size:11px;font-weight:bold;">98 pts</div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:4px;margin-bottom:8px;">
+          <div style="background:#fef3c7;border-radius:4px;padding:6px;text-align:center;font-size:11px;">72%</div>
+          <div style="font-size:9px;color:#94a3b8;align-self:center;">acc</div>
+          <div style="background:#e0f2fe;border-radius:4px;padding:6px;text-align:center;font-size:11px;">61%</div>
+        </div>
+        <div style="font-size:10px;color:#64748b;background:#fff;border:1px solid #e2e8f0;border-radius:4px;padding:6px;margin-top:4px;">
+          <div style="font-weight:600;margin-bottom:4px;">Weekly points</div>
+          <div style="display:flex;gap:3px;align-items:flex-end;height:24px;">
+            <div style="background:#fbbf24;width:16px;height:18px;border-radius:2px;"></div>
+            <div style="background:#60a5fa;width:16px;height:12px;border-radius:2px;"></div>
+            <div style="background:#fbbf24;width:16px;height:22px;border-radius:2px;"></div>
+            <div style="background:#60a5fa;width:16px;height:16px;border-radius:2px;"></div>
+          </div>
+        </div>
+        <div style="margin-top:6px;font-size:10px;color:#64748b;">↓ Match list below…</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A — Stats then weekly then matches</h3>
+      <p>Search bar at top, stat tiles middle, weekly mini-chart, then full match list scrolling below</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="B" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="font-family:sans-serif;font-size:12px;padding:12px;background:#f8f8f8;border-radius:6px;">
+        <div style="display:flex;gap:8px;margin-bottom:10px;">
+          <div style="flex:1;background:#e2e8f0;border-radius:4px;padding:6px 8px;font-size:11px;color:#64748b;">🔍 Player A…</div>
+          <div style="color:#94a3b8;font-weight:bold;align-self:center;">vs</div>
+          <div style="flex:1;background:#e2e8f0;border-radius:4px;padding:6px 8px;font-size:11px;color:#64748b;">🔍 Player B…</div>
+        </div>
+        <div style="display:flex;gap:6px;margin-bottom:8px;">
+          <div style="flex:1;background:#fef3c7;border-radius:4px;padding:8px;text-align:center;">
+            <div style="font-weight:bold;">Alice</div>
+            <div style="font-size:18px;font-weight:bold;color:#d97706;">142</div>
+            <div style="font-size:9px;color:#64748b;">pts · rank #3 · 72% acc · 8 exact</div>
+          </div>
+          <div style="flex:1;background:#e0f2fe;border-radius:4px;padding:8px;text-align:center;">
+            <div style="font-weight:bold;">Bob</div>
+            <div style="font-size:18px;font-weight:bold;color:#0284c7;">98</div>
+            <div style="font-size:9px;color:#64748b;">pts · rank #7 · 61% acc · 5 exact</div>
+          </div>
+        </div>
+        <div style="font-size:10px;color:#64748b;font-weight:600;margin-bottom:4px;">Week by week</div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:3px;margin-bottom:8px;">
+          <div style="background:#fff;border:1px solid #e2e8f0;border-radius:3px;padding:4px;text-align:center;font-size:9px;"><div style="color:#64748b">Wk 1</div><div style="color:#d97706;font-weight:bold;">24</div><div style="color:#0284c7;font-weight:bold;">18</div></div>
+          <div style="background:#fff;border:1px solid #e2e8f0;border-radius:3px;padding:4px;text-align:center;font-size:9px;"><div style="color:#64748b">Wk 2</div><div style="color:#d97706;font-weight:bold;">38</div><div style="color:#0284c7;font-weight:bold;">22</div></div>
+          <div style="background:#fff;border:1px solid #e2e8f0;border-radius:3px;padding:4px;text-align:center;font-size:9px;"><div style="color:#64748b">Wk 3</div><div style="color:#d97706;font-weight:bold;">80</div><div style="color:#0284c7;font-weight:bold;">58</div></div>
+        </div>
+        <div style="font-size:10px;color:#64748b;font-weight:600;margin-bottom:4px;">Matches</div>
+        <div style="background:#fff;border:1px solid #e2e8f0;border-radius:3px;padding:5px;font-size:9px;">
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px;text-align:center;">
+            <div style="color:#d97706;">1–0 ✓</div><div style="color:#64748b;font-weight:bold;">Brazil 2–1 France</div><div style="color:#0284c7;">2–1 ✓</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B — Hero cards + compact week grid + matches</h3>
+      <p>Two large hero stat cards side by side, weekly grid showing pts per week, then match rows</p>
+    </div>
+  </div>
+
+</div>

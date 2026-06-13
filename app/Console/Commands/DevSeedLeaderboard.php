@@ -16,21 +16,31 @@ use Illuminate\Support\Str;
 
 class DevSeedLeaderboard extends Command
 {
-    protected $signature = 'dev:seed-leaderboard';
+    protected $signature = 'dev:seed-leaderboard {--count=20 : Number of additional users to create}';
 
-    protected $description = 'Reset and seed 20 users with 72 predictions each, then score the leaderboard (development only)';
+    protected $description = 'Reset and seed users with predictions for all 104 fixtures, simulate results, then score the leaderboard (development only)';
 
     public function handle(
         RecalculateFixturePredictions $scorePredictions,
         RecalculateUserStats $recalculateStats,
     ): int {
+        $count = (int) $this->option('count');
+
         $this->reset();
 
-        $users = $this->seedUsers();
-        $fixtures = Fixture::where('match_number', '<=', 72)->get();
+        $this->seedUsers($count);
+        $users = User::where('is_admin', false)->where('is_dummy', false)->get();
+
+        $fixtures = Fixture::orderBy('match_number')->get();
+
+        if ($fixtures->isEmpty()) {
+            $this->error('No fixtures found. Run the fixture seeder or sync first.');
+
+            return self::FAILURE;
+        }
 
         $this->seedPredictions($users, $fixtures);
-        $this->scoreFixtures($fixtures, $scorePredictions, $recalculateStats);
+        $this->simulateAndScore($fixtures, $scorePredictions, $recalculateStats);
         $this->printLeaderboard();
 
         return self::SUCCESS;
@@ -38,32 +48,34 @@ class DevSeedLeaderboard extends Command
 
     private function reset(): void
     {
-        $this->info('Resetting...');
+        $this->info('Resetting predictions and stats...');
 
         UserStat::query()->delete();
         Prediction::query()->delete();
-        User::where('email', '!=', 'gkimpson@gmail.com')->delete();
+        User::where('is_admin', false)
+            ->where('is_dummy', false)
+            ->where('email', '!=', 'gkimpson@gmail.com')
+            ->delete();
     }
 
-    /** @return Collection<int, User> */
-    private function seedUsers(): Collection
+    private function seedUsers(int $count): void
     {
-        $this->info('Creating 20 users...');
+        $this->info("Creating {$count} users (is_admin=0, is_dummy=0)...");
 
-        User::factory()->count(20)->create();
-
-        return User::where('email', '!=', 'gkimpson@gmail.com')->get();
+        User::factory()->count($count)->create([
+            'is_admin' => false,
+            'is_dummy' => false,
+        ]);
     }
 
     /**
      * @param  Collection<int, User>  $users
      * @param  Collection<int, Fixture>  $fixtures
      */
-    private function seedPredictions(
-        Collection $users,
-        Collection $fixtures,
-    ): void {
-        $this->info('Seeding 1,440 predictions...');
+    private function seedPredictions(Collection $users, Collection $fixtures): void
+    {
+        $total = $users->count() * $fixtures->count();
+        $this->info("Seeding {$total} predictions ({$users->count()} users × {$fixtures->count()} fixtures)...");
 
         $rows = [];
         $now = now();
@@ -88,15 +100,13 @@ class DevSeedLeaderboard extends Command
         }
     }
 
-    /**
-     * @param  Collection<int, Fixture>  $fixtures
-     */
-    private function scoreFixtures(
+    /** @param  Collection<int, Fixture>  $fixtures */
+    private function simulateAndScore(
         Collection $fixtures,
         RecalculateFixturePredictions $scorePredictions,
         RecalculateUserStats $recalculateStats,
     ): void {
-        $this->info('Scoring 72 fixtures...');
+        $this->info("Simulating results and scoring all {$fixtures->count()} fixtures...");
 
         $bar = $this->output->createProgressBar($fixtures->count());
         $bar->start();
@@ -135,8 +145,9 @@ class DevSeedLeaderboard extends Command
                 $stat->user->name,
                 (string) $stat->total_points,
                 $stat->predictions_made.' / '.Fixture::TOTAL_WORLD_CUP_MATCHES,
+                (string) $stat->exact_scores,
             ]);
 
-        $this->table(['#', 'Player', 'Points', 'Scored'], $entries);
+        $this->table(['#', 'Player', 'Points', 'Scored', 'Exact'], $entries);
     }
 }

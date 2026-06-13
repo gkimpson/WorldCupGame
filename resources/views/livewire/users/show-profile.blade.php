@@ -13,6 +13,19 @@
             </flux:text>
         </div>
 
+        @auth
+            @if (auth()->id() !== $user->id)
+                <flux:button
+                    :href="route('users.compare.show', [auth()->id(), $user->id])"
+                    variant="outline"
+                    icon="users"
+                    wire:navigate
+                >
+                    Compare with me
+                </flux:button>
+            @endif
+        @endauth
+
         @if (auth()->id() === $user->id)
             @php
                 $shareText = $globalRank > 0

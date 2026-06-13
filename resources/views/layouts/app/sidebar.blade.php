@@ -26,6 +26,12 @@
                     </flux:sidebar.item>
                 </flux:sidebar.group>
 
+                <flux:sidebar.group :heading="__('Players')" class="grid">
+                    <flux:sidebar.item icon="users" :href="route('users.compare')" :current="request()->routeIs('users.compare*')" wire:navigate>
+                        {{ __('Compare') }}
+                    </flux:sidebar.item>
+                </flux:sidebar.group>
+
                 <flux:sidebar.group :heading="__('Leaderboards')" class="grid">
                     <flux:sidebar.item icon="trophy" :href="route('leaderboard.global')" :current="request()->routeIs('leaderboard.global')" wire:navigate>
                         {{ __('Global') }}
@@ -35,6 +41,9 @@
                     </flux:sidebar.item>
                     <flux:sidebar.item icon="star" :href="route('leaderboard.perfect')" :current="request()->routeIs('leaderboard.perfect')" wire:navigate>
                         {{ __('Perfect 104') }}
+                    </flux:sidebar.item>
+                    <flux:sidebar.item icon="arrow-trending-up" :href="route('leaderboard.movers')" :current="request()->routeIs('leaderboard.movers')" wire:navigate>
+                        {{ __('Biggest Movers') }}
                     </flux:sidebar.item>
                 </flux:sidebar.group>
             </flux:sidebar.nav>

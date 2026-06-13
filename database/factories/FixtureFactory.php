@@ -24,6 +24,7 @@ class FixtureFactory extends Factory
 
         return [
             'provider_fixture_id' => null,
+            'week_number' => null,
             'home_team_id' => $qualifiedIds->isNotEmpty() ? $qualifiedIds->random() : Team::factory(),
             'away_team_id' => $qualifiedIds->isNotEmpty() ? $qualifiedIds->random() : Team::factory(),
             'home_team_placeholder' => null,

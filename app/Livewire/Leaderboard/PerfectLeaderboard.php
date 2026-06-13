@@ -2,20 +2,28 @@
 
 namespace App\Livewire\Leaderboard;
 
+use App\Models\Fixture;
 use App\Models\UserStat;
+use App\Models\UserWeeklyStat;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Collection;
 use Illuminate\View\View;
 use Livewire\Attributes\Title;
+use Livewire\Attributes\Url;
 use Livewire\Component;
 
 #[Title('Perfect 104 Leaderboard')]
 class PerfectLeaderboard extends Component
 {
+    #[Url(as: 'week')]
+    public ?int $week = null;
+
     public function render(): View
     {
         $user = auth()->user();
         $userId = $user?->is_dummy ? null : $user?->id;
 
-        $stats = UserStat::forRealUsers()
+        $stats = $this->statsQuery()
             ->with('user')
             ->orderBy('exact_scores', 'desc')
             ->orderBy('total_points', 'desc')
@@ -24,7 +32,7 @@ class PerfectLeaderboard extends Component
             ->get();
 
         $inTop100 = $userId !== null && $stats->contains('user_id', $userId);
-        $topEntries = $stats->map(function (UserStat $stat, int $index) use ($userId): array {
+        $topEntries = $stats->map(function (UserStat|UserWeeklyStat $stat, int $index) use ($userId): array {
             return [
                 'rank' => $index + 1,
                 'name' => $stat->user->name,
@@ -37,14 +45,14 @@ class PerfectLeaderboard extends Component
 
         $pinnedEntry = null;
         if ($userId !== null && ! $inTop100) {
-            $userStat = UserStat::forRealUsers()->where('user_id', $userId)->first();
+            $userStat = $this->statsQuery()->where('user_id', $userId)->first();
             if ($userStat !== null) {
-                $rank = UserStat::forRealUsers()->where('exact_scores', '>', $userStat->exact_scores)->count()
-                    + UserStat::forRealUsers()
+                $rank = $this->statsQuery()->where('exact_scores', '>', $userStat->exact_scores)->count()
+                    + $this->statsQuery()
                         ->where('exact_scores', $userStat->exact_scores)
                         ->where('total_points', '>', $userStat->total_points)
                         ->count()
-                    + UserStat::forRealUsers()
+                    + $this->statsQuery()
                         ->where('exact_scores', $userStat->exact_scores)
                         ->where('total_points', $userStat->total_points)
                         ->where('id', '<', $userStat->id)
@@ -64,6 +72,28 @@ class PerfectLeaderboard extends Component
         return view('livewire.leaderboard.perfect-leaderboard', [
             'topEntries' => $topEntries,
             'pinnedEntry' => $pinnedEntry,
+            'availableWeeks' => $this->availableWeeks(),
         ]);
+    }
+
+    /** @return Builder<UserStat>|Builder<UserWeeklyStat> */
+    private function statsQuery(): Builder
+    {
+        if ($this->week === null) {
+            return UserStat::forRealUsers();
+        }
+
+        return UserWeeklyStat::forRealUsers()->where('week_number', $this->week);
+    }
+
+    /** @return Collection<int, int> */
+    private function availableWeeks(): Collection
+    {
+        return Fixture::query()
+            ->whereNotNull('week_number')
+            ->whereHas('predictions', fn (Builder $q) => $q->whereNotNull('points'))
+            ->distinct()
+            ->orderBy('week_number')
+            ->pluck('week_number');
     }
 }

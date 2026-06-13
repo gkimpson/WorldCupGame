@@ -2,20 +2,28 @@
 
 namespace App\Livewire\Leaderboard;
 
+use App\Models\Fixture;
 use App\Models\UserStat;
+use App\Models\UserWeeklyStat;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Collection;
 use Illuminate\View\View;
 use Livewire\Attributes\Title;
+use Livewire\Attributes\Url;
 use Livewire\Component;
 
 #[Title('Accuracy Leaderboard')]
 class AccuracyLeaderboard extends Component
 {
+    #[Url(as: 'week')]
+    public ?int $week = null;
+
     public function render(): View
     {
         $user = auth()->user();
         $userId = $user?->is_dummy ? null : $user?->id;
 
-        $stats = UserStat::forRealUsers()
+        $stats = $this->statsQuery()
             ->with('user')
             ->orderBy('correct_outcomes', 'desc')
             ->orderBy('predictions_made', 'asc')
@@ -24,7 +32,7 @@ class AccuracyLeaderboard extends Component
             ->get();
 
         $inTop100 = $userId !== null && $stats->contains('user_id', $userId);
-        $topEntries = $stats->map(function (UserStat $stat, int $index) use ($userId): array {
+        $topEntries = $stats->map(function (UserStat|UserWeeklyStat $stat, int $index) use ($userId): array {
             $accuracyPct = $stat->predictions_made > 0
                 ? round($stat->correct_outcomes / $stat->predictions_made * 100, 1)
                 : 0;
@@ -41,14 +49,14 @@ class AccuracyLeaderboard extends Component
 
         $pinnedEntry = null;
         if ($userId !== null && ! $inTop100) {
-            $userStat = UserStat::forRealUsers()->where('user_id', $userId)->first();
+            $userStat = $this->statsQuery()->where('user_id', $userId)->first();
             if ($userStat !== null) {
-                $rank = UserStat::forRealUsers()->where('correct_outcomes', '>', $userStat->correct_outcomes)->count()
-                    + UserStat::forRealUsers()
+                $rank = $this->statsQuery()->where('correct_outcomes', '>', $userStat->correct_outcomes)->count()
+                    + $this->statsQuery()
                         ->where('correct_outcomes', $userStat->correct_outcomes)
                         ->where('predictions_made', '<', $userStat->predictions_made)
                         ->count()
-                    + UserStat::forRealUsers()
+                    + $this->statsQuery()
                         ->where('correct_outcomes', $userStat->correct_outcomes)
                         ->where('predictions_made', $userStat->predictions_made)
                         ->where('id', '<', $userStat->id)
@@ -72,6 +80,28 @@ class AccuracyLeaderboard extends Component
         return view('livewire.leaderboard.accuracy-leaderboard', [
             'topEntries' => $topEntries,
             'pinnedEntry' => $pinnedEntry,
+            'availableWeeks' => $this->availableWeeks(),
         ]);
+    }
+
+    /** @return Builder<UserStat>|Builder<UserWeeklyStat> */
+    private function statsQuery(): Builder
+    {
+        if ($this->week === null) {
+            return UserStat::forRealUsers();
+        }
+
+        return UserWeeklyStat::forRealUsers()->where('week_number', $this->week);
+    }
+
+    /** @return Collection<int, int> */
+    private function availableWeeks(): Collection
+    {
+        return Fixture::query()
+            ->whereNotNull('week_number')
+            ->whereHas('predictions', fn (Builder $q) => $q->whereNotNull('points'))
+            ->distinct()
+            ->orderBy('week_number')
+            ->pluck('week_number');
     }
 }

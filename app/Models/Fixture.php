@@ -21,6 +21,7 @@ use Illuminate\Support\Carbon;
  * @property string|null $home_team_placeholder
  * @property string|null $away_team_placeholder
  * @property FixtureStage $stage
+ * @property int|null $week_number
  * @property string|null $group
  * @property int|null $match_number
  * @property string|null $venue
@@ -40,7 +41,7 @@ use Illuminate\Support\Carbon;
     'provider_fixture_id',
     'home_team_id', 'away_team_id',
     'home_team_placeholder', 'away_team_placeholder',
-    'stage', 'group', 'match_number',
+    'stage', 'week_number', 'group', 'match_number',
     'venue', 'city', 'scheduled_at', 'lock_at', 'status', 'is_locked',
     'home_score', 'away_score',
     'home_score_aet', 'away_score_aet',
@@ -60,6 +61,7 @@ class Fixture extends Model
     {
         return [
             'provider_fixture_id' => 'integer',
+            'week_number' => 'integer',
             'stage' => FixtureStage::class,
             'status' => FixtureStatus::class,
             'is_locked' => 'boolean',

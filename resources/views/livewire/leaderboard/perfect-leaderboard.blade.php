@@ -1,6 +1,22 @@
 <div class="space-y-6">
     <flux:heading size="xl">Perfect 104 Leaderboard</flux:heading>
 
+    <div class="flex flex-wrap gap-2">
+        <flux:badge as="a" href="{{ route('leaderboard.global') }}">Global</flux:badge>
+        <flux:badge as="a" href="{{ route('leaderboard.accuracy') }}">Accuracy</flux:badge>
+        <flux:badge as="a" href="{{ route('leaderboard.perfect') }}" color="amber">Perfect 104</flux:badge>
+        <flux:badge as="a" href="{{ route('leaderboard.movers') }}">Biggest Movers</flux:badge>
+    </div>
+
+    @if ($availableWeeks->isNotEmpty())
+        <flux:select wire:model.live="week" class="w-40">
+            <flux:select.option value="">All time</flux:select.option>
+            @foreach ($availableWeeks as $w)
+                <flux:select.option value="{{ $w }}">Week {{ $w }}</flux:select.option>
+            @endforeach
+        </flux:select>
+    @endif
+
     <flux:table>
         <flux:table.columns>
             <flux:table.column class="w-16">#</flux:table.column>
