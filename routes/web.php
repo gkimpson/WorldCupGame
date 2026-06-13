@@ -26,6 +26,10 @@ Route::livewire('/leaderboard/accuracy', AccuracyLeaderboard::class)->name('lead
 Route::livewire('/leaderboard/perfect', PerfectLeaderboard::class)->name('leaderboard.perfect');
 Route::livewire('/leaderboard/movers', BiggestMovers::class)->name('leaderboard.movers');
 
+Route::middleware(['auth'])->group(function () {
+    Route::impersonate();
+});
+
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::livewire('dashboard', Dashboard::class)->name('dashboard');
     Route::livewire('fixtures', IndexFixtures::class)->name('fixtures.index');

@@ -7,6 +7,7 @@ use App\Models\Fixture;
 use App\Models\League;
 use App\Models\LeagueMember;
 use App\Models\Prediction;
+use App\Models\User;
 use App\Models\UserStat;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
@@ -35,6 +36,11 @@ class Dashboard extends Component
 
     public bool $hasAnyPredictions = false;
 
+    /** @var Collection<int, User>|null */
+    public ?Collection $impersonatableUsers = null;
+
+    public ?int $selectedUserId = null;
+
     public function mount(): void
     {
         $user = Auth::user();
@@ -48,6 +54,12 @@ class Dashboard extends Component
         }
 
         $this->hasAnyPredictions = $this->predictionsMade > 0;
+
+        if ($user->is_admin) {
+            $this->impersonatableUsers = User::where('is_admin', false)
+                ->orderBy('name')
+                ->get(['id', 'name', 'email']);
+        }
 
         $this->upcomingFixtures = Fixture::where('scheduled_at', '>', now())
             ->where('status', '!=', FixtureStatus::Completed)
@@ -105,6 +117,13 @@ class Dashboard extends Component
             ->count();
 
         return $usersAhead + 1;
+    }
+
+    public function updatedSelectedUserId(?int $value): void
+    {
+        if ($value !== null) {
+            $this->redirect(route('impersonate', $value));
+        }
     }
 
     public function render(): View

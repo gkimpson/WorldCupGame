@@ -1,5 +1,16 @@
 <div class="flex h-full w-full flex-1 flex-col gap-6">
 
+    @if($impersonatableUsers !== null)
+        <flux:card class="border-amber-200 bg-amber-50 p-4 dark:border-amber-800 dark:bg-amber-950">
+            <flux:heading size="sm" class="mb-2 text-amber-800 dark:text-amber-200">Impersonate a user</flux:heading>
+            <flux:select wire:model.live="selectedUserId" placeholder="Select a user to impersonate...">
+                @foreach($impersonatableUsers as $u)
+                    <flux:select.option value="{{ $u->id }}">{{ $u->name }} — {{ $u->email }}</flux:select.option>
+                @endforeach
+            </flux:select>
+        </flux:card>
+    @endif
+
     {{-- Stat cards --}}
     <div class="grid gap-4 md:grid-cols-3">
         <flux:card class="flex flex-col gap-1 p-5">

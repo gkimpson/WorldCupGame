@@ -3,7 +3,13 @@
     <head>
         @include('partials.head')
     </head>
-    <body class="min-h-screen bg-white dark:bg-zinc-800">
+    <body class="min-h-screen bg-white dark:bg-zinc-800 @impersonating pt-10 @endImpersonating">
+        @impersonating
+            <div class="fixed inset-x-0 top-0 z-50 flex items-center justify-between bg-amber-500 px-4 py-2 text-sm font-medium text-white shadow">
+                <span>Impersonating: <strong>{{ auth()->user()->name }}</strong> ({{ auth()->user()->email }})</span>
+                <a href="{{ route('impersonate.leave') }}" class="underline hover:no-underline">Stop impersonating</a>
+            </div>
+        @endImpersonating
         <flux:sidebar sticky collapsible="mobile" class="border-e border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
             <flux:sidebar.header>
                 <x-app-logo :sidebar="true" href="{{ route('dashboard') }}" wire:navigate />
