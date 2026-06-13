@@ -32,7 +32,7 @@ class BiggestMovers extends Component
         return DB::select(<<<'SQL'
             WITH current_ranks AS (
                 SELECT uws.user_id,
-                       ROW_NUMBER() OVER (ORDER BY uws.total_points DESC, uws.id ASC) AS rank
+                       ROW_NUMBER() OVER (ORDER BY uws.total_points DESC, uws.id ASC) AS `rank`
                 FROM user_weekly_stats uws
                 INNER JOIN users u ON u.id = uws.user_id
                 WHERE uws.week_number = ?
@@ -40,7 +40,7 @@ class BiggestMovers extends Component
             ),
             prev_ranks AS (
                 SELECT uws.user_id,
-                       ROW_NUMBER() OVER (ORDER BY uws.total_points DESC, uws.id ASC) AS rank
+                       ROW_NUMBER() OVER (ORDER BY uws.total_points DESC, uws.id ASC) AS `rank`
                 FROM user_weekly_stats uws
                 INNER JOIN users u ON u.id = uws.user_id
                 WHERE uws.week_number = ?
@@ -48,15 +48,15 @@ class BiggestMovers extends Component
             )
             SELECT u.name,
                    u.id AS user_id,
-                   cr.rank AS current_rank,
-                   pr.rank AS prev_rank,
-                   (pr.rank - cr.rank) AS rank_change,
+                   cr.`rank` AS current_rank,
+                   pr.`rank` AS prev_rank,
+                   (CAST(pr.`rank` AS SIGNED) - CAST(cr.`rank` AS SIGNED)) AS rank_change,
                    uws.total_points
             FROM current_ranks cr
             INNER JOIN prev_ranks pr ON pr.user_id = cr.user_id
             INNER JOIN users u ON u.id = cr.user_id
             INNER JOIN user_weekly_stats uws ON uws.user_id = cr.user_id AND uws.week_number = ?
-            ORDER BY ABS(pr.rank - cr.rank) DESC, (pr.rank - cr.rank) DESC
+            ORDER BY ABS(CAST(pr.`rank` AS SIGNED) - CAST(cr.`rank` AS SIGNED)) DESC, (CAST(pr.`rank` AS SIGNED) - CAST(cr.`rank` AS SIGNED)) DESC
             LIMIT 10
         SQL, [$currentWeek, $previousWeek, $currentWeek]);
     }

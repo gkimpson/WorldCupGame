@@ -62,10 +62,10 @@
 
     <div class="grid gap-4 lg:grid-cols-2">
         <flux:card class="space-y-4">
-            <div class="flex items-center justify-between gap-4">
+            <div class="flex flex-wrap items-center justify-between gap-3">
                 <flux:heading size="lg">{{ __('Your Prediction') }}</flux:heading>
 
-                <div class="flex items-center gap-2">
+                <div class="flex flex-wrap items-center gap-2">
                     @if($outcome !== null && $outcome !== \App\Enums\PredictionOutcome::Pending)
                         @php
                             $outcomeBadgeColor = match($outcome) {
