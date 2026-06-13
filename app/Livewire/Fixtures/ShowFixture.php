@@ -29,6 +29,10 @@ class ShowFixture extends Component
                 ->first();
         }
 
+        $outcome = $userPrediction !== null
+            ? $userPrediction->outcome($this->fixture)
+            : null;
+
         $predictionSummary = [
             'total' => Prediction::where('fixture_id', $this->fixture->id)->count(),
             'home_wins' => Prediction::where('fixture_id', $this->fixture->id)
@@ -44,6 +48,7 @@ class ShowFixture extends Component
 
         return view('livewire.fixtures.show-fixture', [
             'userPrediction' => $userPrediction,
+            'outcome' => $outcome,
             'predictionSummary' => $predictionSummary,
         ]);
     }

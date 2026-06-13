@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\PredictionOutcome;
 use Database\Factories\PredictionFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
@@ -45,5 +46,19 @@ class Prediction extends Model
     public function fixture(): BelongsTo
     {
         return $this->belongsTo(Fixture::class);
+    }
+
+    public function outcome(Fixture $fixture): PredictionOutcome
+    {
+        if ($fixture->home_score === null) {
+            return PredictionOutcome::Pending;
+        }
+
+        return PredictionOutcome::fromScores(
+            $this->home_score,
+            $this->away_score,
+            $fixture->home_score,
+            $fixture->away_score,
+        );
     }
 }

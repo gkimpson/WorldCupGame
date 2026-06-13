@@ -66,6 +66,24 @@
                 <flux:heading size="lg">{{ __('Your Prediction') }}</flux:heading>
 
                 <div class="flex items-center gap-2">
+                    @if($outcome !== null && $outcome !== \App\Enums\PredictionOutcome::Pending)
+                        @php
+                            $outcomeBadgeColor = match($outcome) {
+                                \App\Enums\PredictionOutcome::Exact => 'green',
+                                \App\Enums\PredictionOutcome::Correct => 'amber',
+                                \App\Enums\PredictionOutcome::Incorrect => 'red',
+                                default => 'zinc',
+                            };
+                            $outcomeLabel = match($outcome) {
+                                \App\Enums\PredictionOutcome::Exact => __('Exact Score'),
+                                \App\Enums\PredictionOutcome::Correct => __('Correct Outcome'),
+                                \App\Enums\PredictionOutcome::Incorrect => __('Incorrect'),
+                                default => '',
+                            };
+                        @endphp
+                        <flux:badge :color="$outcomeBadgeColor">{{ $outcomeLabel }}</flux:badge>
+                    @endif
+
                     @if($userPrediction?->points !== null)
                         <flux:badge color="green">{{ trans_choice(':count point|:count points', $userPrediction->points, ['count' => $userPrediction->points]) }}</flux:badge>
                         <x-share-button
@@ -83,12 +101,20 @@
                     <span class="shrink-0 text-xl font-semibold">{{ $userPrediction->home_score }} - {{ $userPrediction->away_score }}</span>
                     <span class="min-w-0 flex-1 truncate font-medium">{{ $awayName }}</span>
                 </div>
+
+                @if($outcome === \App\Enums\PredictionOutcome::Pending)
+                    <div class="text-center">
+                        <flux:badge color="zinc">{{ __('Locked · Awaiting result') }}</flux:badge>
+                    </div>
+                @endif
             @else
                 <div class="rounded-lg border border-dashed border-zinc-300 p-5 text-center dark:border-zinc-700">
                     <flux:text class="text-zinc-500">{{ __('You have not predicted this fixture yet.') }}</flux:text>
-                    <flux:button :href="route('predictions.index')" icon="pencil-square" wire:navigate class="mt-4">
-                        {{ __('Make Prediction') }}
-                    </flux:button>
+                    @if(!$fixture->isLocked())
+                        <flux:button :href="route('predictions.index')" icon="pencil-square" wire:navigate class="mt-4">
+                            {{ __('Make Prediction') }}
+                        </flux:button>
+                    @endif
                 </div>
             @endif
         </flux:card>
