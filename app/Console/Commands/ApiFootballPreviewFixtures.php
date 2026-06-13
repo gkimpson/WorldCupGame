@@ -136,24 +136,7 @@ final class ApiFootballPreviewFixtures extends Command
             return collect();
         }
 
-        return collect([
-            $this->fallbackFixture(
-                date: '2026-06-11T19:00:00+00:00',
-                round: 'Group Stage - 1',
-                homeTeam: 'Mexico',
-                awayTeam: 'South Africa',
-                homeScore: 2,
-                awayScore: 0,
-            ),
-            $this->fallbackFixture(
-                date: '2026-06-12T02:00:00+00:00',
-                round: 'Group Stage - 1',
-                homeTeam: 'South Korea',
-                awayTeam: 'Czechia',
-                homeScore: 2,
-                awayScore: 1,
-            ),
-        ]);
+        return collect([]);
     }
 
     /** @return array<string, mixed> */

@@ -7,6 +7,7 @@ use App\Listeners\RecalculateFixturePredictions;
 use App\Listeners\RecalculateUserStats;
 use App\Services\ApiFootball\ApiFootballClient;
 use App\Services\ApiFootball\Contracts\FootballDataProviderInterface;
+use App\Services\Gemini\GeminiResultsService;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
@@ -22,6 +23,11 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->bind(FootballDataProviderInterface::class, ApiFootballClient::class);
+
+        $this->app->singleton(GeminiResultsService::class, fn () => new GeminiResultsService(
+            apiKey: (string) config('services.gemini.key'),
+            model: (string) config('services.gemini.model', 'gemini-2.5-flash'),
+        ));
     }
 
     /**

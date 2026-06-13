@@ -42,4 +42,9 @@ return [
         'season' => (int) env('API_FOOTBALL_SEASON', 2026),
     ],
 
+    'gemini' => [
+        'key' => env('GEMINI_API_KEY'),
+        'model' => env('GEMINI_MODEL', 'gemini-2.5-flash'),
+    ],
+
 ];
