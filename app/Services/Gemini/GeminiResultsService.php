@@ -153,7 +153,7 @@ final class GeminiResultsService
         - "in_progress" — the match is currently being played
         - "not_started" — the match has not yet been played or no result was found
 
-        Only set home_score and away_score to integers when status is "completed" or "in_progress". Use null otherwise.
+        Only set home_score and away_score to integers when status is "completed". Use null otherwise.
         PROMPT;
     }
 }
