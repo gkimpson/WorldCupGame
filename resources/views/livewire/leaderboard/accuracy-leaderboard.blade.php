@@ -9,12 +9,17 @@
     </div>
 
     @if ($availableWeeks->isNotEmpty())
-        <flux:select wire:model.live="week" class="w-40">
-            <flux:select.option value="">All time</flux:select.option>
-            @foreach ($availableWeeks as $w)
-                <flux:select.option value="{{ $w }}">Week {{ $w }}</flux:select.option>
-            @endforeach
-        </flux:select>
+        <div class="flex items-center gap-3">
+            <flux:button wire:click="showAllTime" size="sm" :variant="$week === null ? 'filled' : 'ghost'">All time</flux:button>
+
+            <div class="flex items-center gap-1">
+                <flux:button wire:click="previousWeek" icon="chevron-left" size="sm" variant="ghost" :disabled="$week === null || $isFirstWeek" />
+                <span class="min-w-20 text-center text-sm font-medium">
+                    {{ $week !== null ? 'Week ' . $week : '' }}
+                </span>
+                <flux:button wire:click="nextWeek" icon="chevron-right" size="sm" variant="ghost" :disabled="$week === null || $isLastWeek" />
+            </div>
+        </div>
     @endif
 
     <flux:table>

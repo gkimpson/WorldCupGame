@@ -18,10 +18,42 @@ class GlobalLeaderboard extends Component
     #[Url(as: 'week')]
     public ?int $week = null;
 
+    public function mount(): void
+    {
+        if ($this->week === null) {
+            $this->week = $this->availableWeeks()->last();
+        }
+    }
+
+    public function previousWeek(): void
+    {
+        $weeks = $this->availableWeeks();
+        $index = $weeks->search($this->week);
+        if ($index > 0) {
+            $this->week = $weeks->get($index - 1);
+        }
+    }
+
+    public function nextWeek(): void
+    {
+        $weeks = $this->availableWeeks();
+        $index = $weeks->search($this->week);
+        if ($index !== false && $index < $weeks->count() - 1) {
+            $this->week = $weeks->get($index + 1);
+        }
+    }
+
+    public function showAllTime(): void
+    {
+        $this->week = null;
+    }
+
     public function render(): View
     {
         $user = auth()->user();
         $userId = $user?->is_dummy ? null : $user?->id;
+
+        $availableWeeks = $this->availableWeeks();
 
         $stats = $this->statsQuery()
             ->with('user')
@@ -64,7 +96,9 @@ class GlobalLeaderboard extends Component
         return view('livewire.leaderboard.global-leaderboard', [
             'topEntries' => $topEntries,
             'pinnedEntry' => $pinnedEntry,
-            'availableWeeks' => $this->availableWeeks(),
+            'availableWeeks' => $availableWeeks,
+            'isFirstWeek' => $this->week !== null && $availableWeeks->first() === $this->week,
+            'isLastWeek' => $this->week !== null && $availableWeeks->last() === $this->week,
         ]);
     }
 
