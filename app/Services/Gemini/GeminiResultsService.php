@@ -142,18 +142,18 @@ final class GeminiResultsService
         Matches:
         {$json}
 
-        Return ONLY a JSON array with one entry per match using the exact same id values provided:
+        Return ONLY a JSON array for matches that are fully completed (final whistle blown, official result confirmed).
+        Do NOT include matches that are in progress, scheduled but not yet started, or where you are uncertain of the final result.
+
+        Example format:
         [
-          {"id": 1, "home_score": 2, "away_score": 0, "status": "completed"},
-          {"id": 2, "home_score": null, "away_score": null, "status": "not_started"}
+          {"id": 1, "home_score": 2, "away_score": 0, "status": "completed"}
         ]
 
-        Status values:
-        - "completed" — the match has finished (use the final score)
-        - "in_progress" — the match is currently being played
-        - "not_started" — the match has not yet been played or no result was found
-
-        Only set home_score and away_score to integers when status is "completed". Use null otherwise.
+        Rules:
+        - Only include a match if status is "completed" and you have confirmed the final score.
+        - Omit any match that has not yet finished or where the result is unknown.
+        - Only set home_score and away_score to integers for completed matches.
         PROMPT;
     }
 }
