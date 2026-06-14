@@ -22,30 +22,28 @@ final class OpenAiResultsService implements WorldCupResultsProviderInterface
 
     /**
      * @param  Collection<int, Fixture>  $fixtures
-     * @return array<string, array{home_score: int|null, away_score: int|null, status: string}>
+     * @return array<int, array{home_score: int|null, away_score: int|null, status: string}>
      */
     public function fetchResults(Collection $fixtures): array
     {
         $fixtureList = $fixtures->map(fn (Fixture $fixture) => [
             'id' => $fixture->id,
-            'home' => $fixture->homeTeam?->name ?? $fixture->home_team_placeholder ?? 'TBD',
-            'away' => $fixture->awayTeam?->name ?? $fixture->away_team_placeholder ?? 'TBD',
+            'home' => ($ht = $fixture->homeTeam) !== null ? $ht->name : ($fixture->home_team_placeholder ?? 'TBD'),
+            'away' => ($at = $fixture->awayTeam) !== null ? $at->name : ($fixture->away_team_placeholder ?? 'TBD'),
             'date' => $fixture->scheduled_at?->format('Y-m-d') ?? '',
         ])->values()->all();
 
-        $response = Http::withToken($this->apiKey)->post(self::API_BASE.'/chat/completions', [
+        $response = Http::withToken($this->apiKey)->post(self::API_BASE.'/responses', [
             'model' => $this->model,
             'tools' => [['type' => 'web_search_preview']],
-            'messages' => [
-                ['role' => 'user', 'content' => $this->buildPrompt($fixtureList)],
-            ],
+            'input' => $this->buildPrompt($fixtureList),
         ]);
 
         if ($response->failed()) {
             throw new RuntimeException("OpenAI API request failed with status {$response->status()}: {$response->body()}");
         }
 
-        $text = (string) data_get($response->json(), 'choices.0.message.content', '');
+        $text = $this->extractResponseText($response->json());
         $decoded = json_decode($this->parser->extractJson($text), true);
 
         if (! is_array($decoded)) {
@@ -60,19 +58,29 @@ final class OpenAiResultsService implements WorldCupResultsProviderInterface
     /** @throws RuntimeException */
     public function fetchRawResults(?string $specificDate = null): string
     {
-        $response = Http::withToken($this->apiKey)->post(self::API_BASE.'/chat/completions', [
+        $response = Http::withToken($this->apiKey)->post(self::API_BASE.'/responses', [
             'model' => $this->model,
             'tools' => [['type' => 'web_search_preview']],
-            'messages' => [
-                ['role' => 'user', 'content' => $this->buildRawPrompt($specificDate)],
-            ],
+            'input' => $this->buildRawPrompt($specificDate),
         ]);
 
         if ($response->failed()) {
             throw new RuntimeException("OpenAI API request failed with status {$response->status()}: {$response->body()}");
         }
 
-        return (string) data_get($response->json(), 'choices.0.message.content', '');
+        return $this->extractResponseText($response->json());
+    }
+
+    /** @param array<string, mixed> $json */
+    private function extractResponseText(array $json): string
+    {
+        foreach ($json['output'] ?? [] as $output) {
+            if (($output['type'] ?? '') === 'message') {
+                return (string) data_get($output, 'content.0.text', '');
+            }
+        }
+
+        return '';
     }
 
     private function buildRawPrompt(?string $specificDate = null): string
@@ -98,7 +106,7 @@ final class OpenAiResultsService implements WorldCupResultsProviderInterface
             .'Group results by matchday or round. Do not say results are unavailable — search and report what you find.';
     }
 
-    /** @param array<int, array{id: string, home: string, away: string, date: string}> $fixtures */
+    /** @param array<int, array{id: int, home: string, away: string, date: string}> $fixtures */
     private function buildPrompt(array $fixtures): string
     {
         $json = json_encode($fixtures, JSON_PRETTY_PRINT);

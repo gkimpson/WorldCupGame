@@ -12,10 +12,11 @@ use Illuminate\Support\Facades\Log;
 function openAiResponse(array $results): array
 {
     return [
-        'choices' => [
+        'output' => [
             [
-                'message' => [
-                    'content' => json_encode($results),
+                'type' => 'message',
+                'content' => [
+                    ['type' => 'output_text', 'text' => json_encode($results)],
                 ],
             ],
         ],
@@ -97,10 +98,11 @@ it('handles malformed OpenAI JSON gracefully without crashing', function () {
 
     Http::fake([
         'api.openai.com/*' => Http::response([
-            'choices' => [
+            'output' => [
                 [
-                    'message' => [
-                        'content' => $malformedContent,
+                    'type' => 'message',
+                    'content' => [
+                        ['type' => 'output_text', 'text' => $malformedContent],
                     ],
                 ],
             ],
