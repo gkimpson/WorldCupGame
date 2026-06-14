@@ -126,11 +126,18 @@ abstract class AbstractAiResultsService implements WorldCupResultsProviderInterf
 
         $fifaUrl = 'https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures?utm_source=openai&country=GB&wtw-filter=ALL';
 
-        return "Today is {$today}. The FIFA World Cup 2026 is currently underway. "
-            .'Fetch every completed match result from the entire tournament so far. '
-            ."PRIMARY SOURCE — fetch the official FIFA scores page at: {$fifaUrl} "
-            .'SECONDARY SOURCE — verify every result against at least one additional independent source (BBC Sport, ESPN, Google Sports, or Sky Sports) and only include a result if both sources agree on the final scoreline. '
-            .'If the two sources disagree on a scoreline, omit that match entirely. '
+        $tournamentStart = 'June 11, 2026';
+        $daysSinceStart = now()->diffInDays('2026-06-11');
+
+        return "Today is {$today}. The FIFA World Cup 2026 started on {$tournamentStart}. "
+            ."Today's date ({$today}) is {$daysSinceStart} days after the tournament started — matches have been played and completed. "
+            .'Do NOT say the tournament has not started or that results are unavailable — you can verify this yourself by comparing today\'s date to the start date. '
+            .'Search for every completed match result from the entire tournament so far. '
+            .'Use these searches in order: '
+            .'(1) "FIFA World Cup 2026 results" to find the official FIFA scores page — the authoritative URL is '.$fifaUrl.' '
+            .'(2) "World Cup 2026 scores BBC Sport" or "World Cup 2026 results ESPN" as a cross-check. '
+            .'FIFA.com is the single authoritative source — if FIFA and the secondary source disagree on a scoreline, trust FIFA. '
+            .'Only omit a match if it genuinely cannot be found on FIFA.com. '
             ."\n\n"
             .'STRICT INCLUSION RULES — a match MUST satisfy ALL of the following to be included:'
             ."\n"
@@ -138,7 +145,7 @@ abstract class AbstractAiResultsService implements WorldCupResultsProviderInterf
             ."\n"
             .'- The result is officially confirmed as FT, AET, or PEN.'
             ."\n"
-            .'- A confirmed final scoreline is available from at least two independent reliable sources and both agree.'
+            .'- A confirmed final scoreline is available from a reliable source.'
             ."\n\n"
             .'STRICT EXCLUSION RULES — immediately discard any match that:'
             ."\n"
@@ -149,8 +156,6 @@ abstract class AbstractAiResultsService implements WorldCupResultsProviderInterf
             .'- Shows a running minute (e.g. 23\', 45+2\', 90\') in any live source.'
             ."\n"
             .'- Has an unconfirmed or disputed result.'
-            ."\n"
-            .'- Cannot be verified by a second source.'
             ."\n\n"
             .'For each match that passes ALL inclusion rules, output exactly one line in this format:'
             ."\n"

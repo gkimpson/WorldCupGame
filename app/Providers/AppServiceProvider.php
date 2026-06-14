@@ -33,7 +33,7 @@ class AppServiceProvider extends ServiceProvider
 
         $this->app->singleton(OpenAiResultsService::class, fn () => new OpenAiResultsService(
             apiKey: (string) config('services.openai.key'),
-            model: (string) config('services.openai.model', 'gpt-4o-mini'),
+            model: (string) config('services.openai.model', 'gpt-4o-search-preview'),
             parser: $this->app->make(ResultsResponseParser::class),
         ));
     }
