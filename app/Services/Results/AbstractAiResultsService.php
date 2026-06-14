@@ -124,10 +124,13 @@ abstract class AbstractAiResultsService implements WorldCupResultsProviderInterf
         $today = now()->format('l, F j, Y');
         $aliasNote = $this->parser->buildAliasNote();
 
+        $fifaUrl = 'https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures?utm_source=openai&country=GB&wtw-filter=ALL';
+
         return "Today is {$today}. The FIFA World Cup 2026 is currently underway. "
-            .'Search for every completed match result from the entire tournament so far. '
-            .'Use at least TWO independent sources (e.g. FIFA.com, BBC Sport, ESPN, Google Sports, Sky Sports) and only include a result if BOTH sources agree on the final scoreline. '
-            .'First search "FIFA World Cup 2026 all results" and "FIFA World Cup 2026 scores", then verify each result with a second search. '
+            .'Fetch every completed match result from the entire tournament so far. '
+            ."PRIMARY SOURCE — fetch the official FIFA scores page at: {$fifaUrl} "
+            .'SECONDARY SOURCE — verify every result against at least one additional independent source (BBC Sport, ESPN, Google Sports, or Sky Sports) and only include a result if both sources agree on the final scoreline. '
+            .'If the two sources disagree on a scoreline, omit that match entirely. '
             ."\n\n"
             .'STRICT INCLUSION RULES — a match MUST satisfy ALL of the following to be included:'
             ."\n"
