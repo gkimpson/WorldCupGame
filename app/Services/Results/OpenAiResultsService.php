@@ -86,6 +86,7 @@ final class OpenAiResultsService implements WorldCupResultsProviderInterface
     private function buildRawPrompt(?string $specificDate = null): string
     {
         $today = now()->format('l, F j, Y');
+        $aliasNote = $this->parser->buildAliasNote();
 
         if ($specificDate !== null) {
             $label = Carbon::parse($specificDate)->format('l, F j, Y');
@@ -93,17 +94,20 @@ final class OpenAiResultsService implements WorldCupResultsProviderInterface
             return "Today is {$today}. The FIFA World Cup 2026 is currently underway. "
                 ."Search the web for results ONLY for matches played on {$label} ({$specificDate}). "
                 ."Search for \"FIFA World Cup 2026 results {$specificDate}\" and \"World Cup 2026 scores {$label}\". "
-                .'List every match played on that date with the final score (home team, away team, home score – away score). '
+                .'Return only completed matches. For each match output exactly one line in this format: Team1 X - Y Team2 '
+                .'where X and Y are the final scores as whole numbers of 0 or above (never negative, never blank). '
+                .'Do not include any other text, headings, commentary, or explanation — only the result lines. '
                 .'Do not include matches from any other date. '
-                .'Do not say results are unavailable — search and report what you find.';
+                ."Do not say results are unavailable — search and report what you find.\n{$aliasNote}";
         }
 
         return "Today is {$today}. The FIFA World Cup 2026 is currently underway. "
-            .'Search the web for the latest match results right now. '
+            .'Search the web for the latest completed match results right now. '
             .'Search for "FIFA World Cup 2026 results today" and "World Cup 2026 scores". '
-            .'List every match that has been played so far with the final score (home team, away team, home score – away score). '
-            .'Include any match currently in progress with the live score. '
-            .'Group results by matchday or round. Do not say results are unavailable — search and report what you find.';
+            .'Return only completed matches. For each match output exactly one line in this format: Team1 X - Y Team2 '
+            .'where X and Y are the final scores as whole numbers of 0 or above (never negative, never blank). '
+            .'Do not include any other text, headings, commentary, or explanation — only the result lines. '
+            ."Do not say results are unavailable — search and report what you find.\n{$aliasNote}";
     }
 
     /** @param array<int, array{id: int, home: string, away: string, date: string}> $fixtures */
