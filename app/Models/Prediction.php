@@ -17,6 +17,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $home_score
  * @property int $away_score
  * @property int|null $points
+ * @property int|null $predictions_made
+ * @property int|null $total_points
+ * @property int|null $correct_outcomes
+ * @property int|null $exact_scores
  */
 #[Fillable(['user_id', 'fixture_id', 'home_score', 'away_score', 'points'])]
 class Prediction extends Model

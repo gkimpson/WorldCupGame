@@ -22,14 +22,14 @@ final class GeminiResultsService implements WorldCupResultsProviderInterface
 
     /**
      * @param  Collection<int, Fixture>  $fixtures
-     * @return array<string, array{home_score: int|null, away_score: int|null, status: string}>
+     * @return array<int, array{home_score: int|null, away_score: int|null, status: string}>
      */
     public function fetchResults(Collection $fixtures): array
     {
         $fixtureList = $fixtures->map(fn (Fixture $fixture) => [
             'id' => $fixture->id,
-            'home' => $fixture->homeTeam?->name ?? $fixture->home_team_placeholder ?? 'TBD',
-            'away' => $fixture->awayTeam?->name ?? $fixture->away_team_placeholder ?? 'TBD',
+            'home' => ($ht = $fixture->homeTeam) !== null ? $ht->name : ($fixture->home_team_placeholder ?? 'TBD'),
+            'away' => ($at = $fixture->awayTeam) !== null ? $at->name : ($fixture->away_team_placeholder ?? 'TBD'),
             'date' => $fixture->scheduled_at?->format('Y-m-d') ?? '',
         ])->values()->all();
 
@@ -108,10 +108,12 @@ final class GeminiResultsService implements WorldCupResultsProviderInterface
             .'Group results by matchday or round. Do not say results are unavailable — search and report what you find.';
     }
 
-    /** @param array<int, array{id: string, home: string, away: string, date: string}> $fixtures */
+    /** @param array<int, array{id: int, home: string, away: string, date: string}> $fixtures */
     private function buildPrompt(array $fixtures): string
     {
         $json = json_encode($fixtures, JSON_PRETTY_PRINT);
+
+        $aliasNote = $this->parser->buildAliasNote();
 
         return <<<PROMPT
         You are a sports data assistant. Search for FIFA World Cup 2026 match results.
@@ -120,6 +122,7 @@ final class GeminiResultsService implements WorldCupResultsProviderInterface
 
         Matches:
         {$json}
+        {$aliasNote}
 
         Return ONLY a JSON array for matches that are fully completed (final whistle blown, official result confirmed).
         Do NOT include matches that are in progress, scheduled but not yet started, or where you are uncertain of the final result.

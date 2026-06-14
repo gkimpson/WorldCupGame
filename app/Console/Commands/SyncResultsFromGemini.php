@@ -82,8 +82,8 @@ final class SyncResultsFromGemini extends Command
         foreach ($fixtures as $fixture) {
             $result = $results[$fixture->id] ?? null;
 
-            $homeName = $fixture->homeTeam?->name ?? $fixture->home_team_placeholder ?? 'TBD';
-            $awayName = $fixture->awayTeam?->name ?? $fixture->away_team_placeholder ?? 'TBD';
+            $homeName = ($ht = $fixture->homeTeam) !== null ? $ht->name : ($fixture->home_team_placeholder ?? 'TBD');
+            $awayName = ($at = $fixture->awayTeam) !== null ? $at->name : ($fixture->away_team_placeholder ?? 'TBD');
 
             if (
                 $result === null
@@ -144,10 +144,10 @@ final class SyncResultsFromGemini extends Command
 
         $geminiRows = array_map(fn (Fixture $fixture) => [
             $fixture->id,
-            $fixture->homeTeam?->name ?? $fixture->home_team_placeholder ?? 'TBD',
+            ($ht = $fixture->homeTeam) !== null ? $ht->name : ($fixture->home_team_placeholder ?? 'TBD'),
             $results[$fixture->id]['home_score'] ?? 'null',
             $results[$fixture->id]['away_score'] ?? 'null',
-            $fixture->awayTeam?->name ?? $fixture->away_team_placeholder ?? 'TBD',
+            ($at = $fixture->awayTeam) !== null ? $at->name : ($fixture->away_team_placeholder ?? 'TBD'),
             $results[$fixture->id]['status'] ?? 'no result',
         ], $fixtures);
 
@@ -160,8 +160,8 @@ final class SyncResultsFromGemini extends Command
 
         foreach ($fixtures as $fixture) {
             $result = $results[$fixture->id] ?? null;
-            $homeName = $fixture->homeTeam?->name ?? $fixture->home_team_placeholder ?? 'TBD';
-            $awayName = $fixture->awayTeam?->name ?? $fixture->away_team_placeholder ?? 'TBD';
+            $homeName = ($ht2 = $fixture->homeTeam) !== null ? $ht2->name : ($fixture->home_team_placeholder ?? 'TBD');
+            $awayName = ($at2 = $fixture->awayTeam) !== null ? $at2->name : ($fixture->away_team_placeholder ?? 'TBD');
 
             if (
                 $result === null

@@ -14,10 +14,33 @@ final class ResultsResponseParser
     }
 
     /**
+     * Returns a prompt note listing known team name aliases so AI providers can
+     * match DB canonical names to alternate spellings found in search results.
+     */
+    public function buildAliasNote(): string
+    {
+        return <<<'NOTE'
+
+        Team name aliases — some teams appear under different names in news and search results.
+        When searching for a match, treat these as the same team:
+        - Turkey = Türkiye
+        - Netherlands = Holland
+        - Ivory Coast = Côte d'Ivoire / Cote d'Ivoire
+        - Iran = IR Iran
+        - South Korea = Korea Republic
+        - Cape Verde = Cabo Verde
+        - Czech Republic = Czechia
+        - United States = USA / US
+        - DR Congo = Democratic Republic of Congo / Congo DR
+        - Bosnia and Herzegovina = Bosnia & Herzegovina / BiH
+        NOTE;
+    }
+
+    /**
      * Map a raw decoded array to the canonical result shape, keyed by fixture id.
      *
      * @param  array<int, array<string, mixed>>  $decoded
-     * @return array<string, array{home_score: int|null, away_score: int|null, status: string}>
+     * @return array<int, array{home_score: int|null, away_score: int|null, status: string}>
      */
     public function normalise(array $decoded): array
     {

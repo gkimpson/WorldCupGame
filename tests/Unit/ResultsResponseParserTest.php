@@ -58,6 +58,26 @@ it('defaults status to not_started when missing', function () {
     expect($result['abc']['status'])->toBe('not_started');
 });
 
+// ── buildAliasNote ───────────────────────────────────────────────────────────
+
+it('includes canonical and alias team names in the alias note', function () {
+    $note = $this->parser->buildAliasNote();
+
+    expect($note)
+        ->toContain('Turkey')
+        ->toContain('Türkiye')
+        ->toContain('Ivory Coast')
+        ->toContain("Côte d'Ivoire")
+        ->toContain('South Korea')
+        ->toContain('Korea Republic')
+        ->toContain('Netherlands')
+        ->toContain('Holland')
+        ->toContain('Cape Verde')
+        ->toContain('Cabo Verde')
+        ->toContain('Iran')
+        ->toContain('IR Iran');
+});
+
 it('keys results by id', function () {
     $decoded = [
         ['id' => 'aaa', 'home_score' => 1, 'away_score' => 0, 'status' => 'completed'],

@@ -111,6 +111,8 @@ final class OpenAiResultsService implements WorldCupResultsProviderInterface
     {
         $json = json_encode($fixtures, JSON_PRETTY_PRINT);
 
+        $aliasNote = $this->parser->buildAliasNote();
+
         return <<<PROMPT
         You are a sports data assistant. Search the web for FIFA World Cup 2026 match results.
 
@@ -118,6 +120,7 @@ final class OpenAiResultsService implements WorldCupResultsProviderInterface
 
         Matches:
         {$json}
+        {$aliasNote}
 
         Return ONLY a JSON array for matches that are fully completed (final whistle blown, official result confirmed).
         Do NOT include matches that are in progress, scheduled but not yet started, or where you are uncertain of the final result.

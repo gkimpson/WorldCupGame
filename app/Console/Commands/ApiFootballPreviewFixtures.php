@@ -136,7 +136,10 @@ final class ApiFootballPreviewFixtures extends Command
             return collect();
         }
 
-        return collect([]);
+        return collect([
+            $this->fallbackFixture('2026-06-11T19:00:00+00:00', 'Group Stage - 1', 'Mexico', 'South Africa', 2, 0),
+            $this->fallbackFixture('2026-06-12T02:00:00+00:00', 'Group Stage - 1', 'South Korea', 'Czechia', 2, 1),
+        ]);
     }
 
     /** @return array<string, mixed> */
@@ -198,7 +201,7 @@ final class ApiFootballPreviewFixtures extends Command
 
     /**
      * @param  Collection<int, array<string, mixed>>  $fixtures
-     * @return Collection<int, array<int, string>>
+     * @return Collection<int, array{string, string, string, string, string, string}>
      */
     private function rows(Collection $fixtures, int $limit): Collection
     {
