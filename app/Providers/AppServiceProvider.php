@@ -2,14 +2,11 @@
 
 namespace App\Providers;
 
-use App\Console\Commands\SyncResultsFromGemini;
-use App\Console\Commands\SyncResultsFromOpenAi;
 use App\Events\ResultImported;
 use App\Listeners\RecalculateFixturePredictions;
 use App\Listeners\RecalculateUserStats;
 use App\Services\ApiFootball\ApiFootballClient;
 use App\Services\ApiFootball\Contracts\FootballDataProviderInterface;
-use App\Services\Results\Contracts\WorldCupResultsProviderInterface;
 use App\Services\Results\GeminiResultsService;
 use App\Services\Results\OpenAiResultsService;
 use App\Services\Results\ResultsResponseParser;
@@ -39,14 +36,6 @@ class AppServiceProvider extends ServiceProvider
             model: (string) config('services.openai.model', 'gpt-4o-mini'),
             parser: $this->app->make(ResultsResponseParser::class),
         ));
-
-        $this->app->when(SyncResultsFromGemini::class)
-            ->needs(WorldCupResultsProviderInterface::class)
-            ->give(GeminiResultsService::class);
-
-        $this->app->when(SyncResultsFromOpenAi::class)
-            ->needs(WorldCupResultsProviderInterface::class)
-            ->give(OpenAiResultsService::class);
     }
 
     public function boot(): void

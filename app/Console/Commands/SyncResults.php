@@ -6,26 +6,48 @@ use App\Enums\FixtureStatus;
 use App\Events\ResultImported;
 use App\Models\Fixture;
 use App\Services\Results\Contracts\WorldCupResultsProviderInterface;
+use App\Services\Results\GeminiResultsService;
+use App\Services\Results\OpenAiResultsService;
 use Illuminate\Console\Command;
 use RuntimeException;
 
-final class SyncResultsFromGemini extends Command
+final class SyncResults extends Command
 {
-    protected $signature = 'world-cup:sync-results-gemini
+    protected $signature = 'world-cup:sync-results
+                            {--provider=gemini : Which AI provider to use (gemini|openai)}
                             {--dry-run : Preview changes without persisting them}
-                            {--dummy : Show raw Gemini response and fixture preview without writing to the database}
-                            {--data-only : Hit Gemini directly and dump raw results, skipping all DB interaction}
-                            {--specific-date= : With --data-only, restrict results to matches played on this date (YYYY-MM-DD)}';
+                            {--dummy : Show raw provider response and fixture preview without writing to the database}
+                            {--data-only : Hit the provider directly and dump raw results, skipping all DB interaction}
+                            {--specific-date= : With --data-only, restrict results to matches played on this date (YYYY-MM-DD)}
+                            {--all : Fetch every completed World Cup 2026 result to date in simplified text format}';
 
-    protected $description = 'Fetch World Cup 2026 match results from Gemini AI and update fixtures';
+    protected $description = 'Fetch World Cup 2026 match results from an AI provider and update fixtures';
 
-    public function __construct(private readonly WorldCupResultsProviderInterface $gemini)
-    {
+    public function __construct(
+        private readonly GeminiResultsService $geminiService,
+        private readonly OpenAiResultsService $openaiService,
+    ) {
         parent::__construct();
     }
 
     public function handle(): int
     {
+        $provider = $this->provider();
+
+        if ($this->option('all')) {
+            try {
+                $raw = $provider->fetchRawResults(null, true);
+            } catch (RuntimeException $exception) {
+                $this->error($exception->getMessage());
+
+                return self::FAILURE;
+            }
+
+            $this->line($raw);
+
+            return self::SUCCESS;
+        }
+
         if ($this->option('data-only')) {
             $specificDate = $this->option('specific-date');
 
@@ -36,7 +58,7 @@ final class SyncResultsFromGemini extends Command
             }
 
             try {
-                $raw = $this->gemini->fetchRawResults($specificDate);
+                $raw = $provider->fetchRawResults($specificDate);
             } catch (RuntimeException $exception) {
                 $this->error($exception->getMessage());
 
@@ -61,7 +83,7 @@ final class SyncResultsFromGemini extends Command
         }
 
         try {
-            $results = $this->gemini->fetchResults($fixtures);
+            $results = $provider->fetchResults($fixtures);
         } catch (RuntimeException $exception) {
             $this->error($exception->getMessage());
 
@@ -70,9 +92,10 @@ final class SyncResultsFromGemini extends Command
 
         $dummy = (bool) $this->option('dummy');
         $dryRun = $dummy || (bool) $this->option('dry-run');
+        $providerLabel = ucfirst((string) $this->option('provider'));
 
         if ($dummy) {
-            $this->outputDummyReport($fixtures->all(), $results);
+            $this->outputDummyReport($fixtures->all(), $results, $providerLabel);
         }
 
         $synced = 0;
@@ -126,23 +149,31 @@ final class SyncResultsFromGemini extends Command
         }
 
         if (! $dummy) {
-            $this->table(['Home', 'Score', 'Away', 'Gemini Status', 'Action'], $rows);
+            $this->table(['Home', 'Score', 'Away', "{$providerLabel} Status", 'Action'], $rows);
             $this->info("Synced: {$synced}, Skipped: {$skipped}".($dryRun ? ' (dry-run)' : ''));
         }
 
         return self::SUCCESS;
     }
 
+    private function provider(): WorldCupResultsProviderInterface
+    {
+        return match ($this->option('provider')) {
+            'openai' => $this->openaiService,
+            default => $this->geminiService,
+        };
+    }
+
     /**
      * @param  Fixture[]  $fixtures
      * @param  array<int, array{home_score: int|null, away_score: int|null, status: string}>  $results
      */
-    private function outputDummyReport(array $fixtures, array $results): void
+    private function outputDummyReport(array $fixtures, array $results, string $providerLabel): void
     {
         $this->newLine();
-        $this->comment('=== RAW DATA RECEIVED FROM GEMINI ===');
+        $this->comment("=== RAW DATA RECEIVED FROM {$providerLabel} ===");
 
-        $geminiRows = array_map(fn (Fixture $fixture) => [
+        $providerRows = array_map(fn (Fixture $fixture) => [
             $fixture->id,
             ($ht = $fixture->homeTeam) !== null ? $ht->name : ($fixture->home_team_placeholder ?? 'TBD'),
             $results[$fixture->id]['home_score'] ?? 'null',
@@ -151,7 +182,7 @@ final class SyncResultsFromGemini extends Command
             $results[$fixture->id]['status'] ?? 'no result',
         ], $fixtures);
 
-        $this->table(['Fixture ID', 'Home Team', 'Home Score', 'Away Score', 'Away Team', 'Status'], $geminiRows);
+        $this->table(['Fixture ID', 'Home Team', 'Home Score', 'Away Score', 'Away Team', 'Status'], $providerRows);
 
         $this->newLine();
         $this->comment('=== WOULD BE WRITTEN TO fixtures TABLE ===');

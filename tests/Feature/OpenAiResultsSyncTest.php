@@ -47,7 +47,7 @@ it('updates a completed fixture with the score from OpenAI', function () {
         ])),
     ]);
 
-    $this->artisan('world-cup:sync-results-openai')->assertExitCode(0);
+    $this->artisan('world-cup:sync-results', ['--provider' => 'openai'])->assertExitCode(0);
 
     $fixture->refresh();
     expect($fixture->home_score)->toBe(2);
@@ -66,7 +66,7 @@ it('dispatches ResultImported event when a fixture is marked completed via OpenA
         ])),
     ]);
 
-    $this->artisan('world-cup:sync-results-openai')->assertExitCode(0);
+    $this->artisan('world-cup:sync-results', ['--provider' => 'openai'])->assertExitCode(0);
 
     Event::assertDispatched(ResultImported::class, fn ($event) => $event->fixture->id === $fixture->id);
 });
@@ -82,7 +82,7 @@ it('does not update the database or dispatch events in dry-run mode', function (
         ])),
     ]);
 
-    $this->artisan('world-cup:sync-results-openai', ['--dry-run' => true])->assertExitCode(0);
+    $this->artisan('world-cup:sync-results', ['--provider' => 'openai', '--dry-run' => true])->assertExitCode(0);
 
     $fixture->refresh();
     expect($fixture->status)->toBe(FixtureStatus::Scheduled);
@@ -109,7 +109,7 @@ it('handles malformed OpenAI JSON gracefully without crashing', function () {
         ]),
     ]);
 
-    $this->artisan('world-cup:sync-results-openai')->assertExitCode(0);
+    $this->artisan('world-cup:sync-results', ['--provider' => 'openai'])->assertExitCode(0);
 
     $fixture->refresh();
     expect($fixture->status)->toBe(FixtureStatus::Scheduled);
@@ -123,7 +123,7 @@ it('handles an OpenAI API failure gracefully', function () {
         'api.openai.com/*' => Http::response([], 500),
     ]);
 
-    $this->artisan('world-cup:sync-results-openai')->assertExitCode(1);
+    $this->artisan('world-cup:sync-results', ['--provider' => 'openai'])->assertExitCode(1);
 
     $fixture->refresh();
     expect($fixture->status)->toBe(FixtureStatus::Scheduled);
@@ -140,7 +140,7 @@ it('shows raw OpenAI data in dummy mode without updating the database', function
         ])),
     ]);
 
-    $exitCode = Artisan::call('world-cup:sync-results-openai', ['--dummy' => true]);
+    $exitCode = Artisan::call('world-cup:sync-results', ['--provider' => 'openai', '--dummy' => true]);
     $output = Artisan::output();
 
     expect($exitCode)->toBe(0);

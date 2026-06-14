@@ -48,7 +48,7 @@ it('updates a completed fixture with the score from Gemini', function () {
         ])),
     ]);
 
-    $this->artisan('world-cup:sync-results-gemini')->assertExitCode(0);
+    $this->artisan('world-cup:sync-results')->assertExitCode(0);
 
     $fixture->refresh();
     expect($fixture->home_score)->toBe(2);
@@ -67,7 +67,7 @@ it('dispatches ResultImported event when a fixture is marked completed', functio
         ])),
     ]);
 
-    $this->artisan('world-cup:sync-results-gemini')->assertExitCode(0);
+    $this->artisan('world-cup:sync-results')->assertExitCode(0);
 
     Event::assertDispatched(ResultImported::class, fn ($event) => $event->fixture->id === $fixture->id);
 });
@@ -83,7 +83,7 @@ it('does not update fixtures that are not yet started', function () {
         ])),
     ]);
 
-    $this->artisan('world-cup:sync-results-gemini')->assertExitCode(0);
+    $this->artisan('world-cup:sync-results')->assertExitCode(0);
 
     $fixture->refresh();
     expect($fixture->status)->toBe(FixtureStatus::Scheduled);
@@ -108,7 +108,7 @@ it('does not re-process already completed fixtures', function () {
 
     Http::fake();
 
-    $this->artisan('world-cup:sync-results-gemini')->assertExitCode(0);
+    $this->artisan('world-cup:sync-results')->assertExitCode(0);
 
     // No Gemini call was made because there are no non-completed past fixtures
     Http::assertNothingSent();
@@ -126,7 +126,7 @@ it('does not update the database or dispatch events in dry-run mode', function (
         ])),
     ]);
 
-    $this->artisan('world-cup:sync-results-gemini', ['--dry-run' => true])->assertExitCode(0);
+    $this->artisan('world-cup:sync-results', ['--dry-run' => true])->assertExitCode(0);
 
     $fixture->refresh();
     expect($fixture->status)->toBe(FixtureStatus::Scheduled);
@@ -145,7 +145,7 @@ it('skips fixtures with null scores even when status is completed', function () 
         ])),
     ]);
 
-    $this->artisan('world-cup:sync-results-gemini')->assertExitCode(0);
+    $this->artisan('world-cup:sync-results')->assertExitCode(0);
 
     $fixture->refresh();
     expect($fixture->status)->toBe(FixtureStatus::Scheduled);
@@ -165,7 +165,7 @@ it('handles malformed Gemini JSON gracefully without crashing', function () {
         ]),
     ]);
 
-    $this->artisan('world-cup:sync-results-gemini')->assertExitCode(0);
+    $this->artisan('world-cup:sync-results')->assertExitCode(0);
 
     $fixture->refresh();
     expect($fixture->status)->toBe(FixtureStatus::Scheduled);
@@ -182,7 +182,7 @@ it('handles a Gemini API failure gracefully', function () {
         'generativelanguage.googleapis.com/*' => Http::response([], 500),
     ]);
 
-    $this->artisan('world-cup:sync-results-gemini')->assertExitCode(1);
+    $this->artisan('world-cup:sync-results')->assertExitCode(1);
 
     $fixture->refresh();
     expect($fixture->status)->toBe(FixtureStatus::Scheduled);
@@ -199,7 +199,7 @@ it('shows raw Gemini data and fixture preview in dummy mode without updating the
         ])),
     ]);
 
-    $exitCode = Artisan::call('world-cup:sync-results-gemini', ['--dummy' => true]);
+    $exitCode = Artisan::call('world-cup:sync-results', ['--dummy' => true]);
     $output = Artisan::output();
 
     expect($exitCode)->toBe(0);
@@ -237,7 +237,7 @@ it('does not include future fixtures in the Gemini request', function () {
         ])),
     ]);
 
-    $this->artisan('world-cup:sync-results-gemini')->assertExitCode(0);
+    $this->artisan('world-cup:sync-results')->assertExitCode(0);
 
     $sentRequest = Http::recorded()[0][0];
     $body = json_decode($sentRequest->body(), true);

@@ -14,5 +14,5 @@ interface WorldCupResultsProviderInterface
     public function fetchResults(Collection $fixtures): array;
 
     /** @throws \RuntimeException */
-    public function fetchRawResults(?string $specificDate = null): string;
+    public function fetchRawResults(?string $specificDate = null, bool $allResults = false): string;
 }
