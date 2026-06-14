@@ -154,9 +154,9 @@ abstract class AbstractAiResultsService implements WorldCupResultsProviderInterf
             ."\n\n"
             .'For each match that passes ALL inclusion rules, output exactly one line in this format:'
             ."\n"
-            .'YYYY-MM-DD HH:MM Team1 X - Y Team2'
+            .'Team1 X - Y Team2'
             ."\n"
-            .'where YYYY-MM-DD is the match date, HH:MM is the kick-off time in UTC, and X and Y are the final integer scores (0 or above, never blank).'
+            .'where X and Y are the final integer scores (0 or above, never blank). Example: England 2 - 0 Germany'
             ."\n\n"
             .'Do not output headers, commentary, explanations, or any other text — only the result lines. '
             ."Do not say results are unavailable — search and report what you find.\n{$aliasNote}";
