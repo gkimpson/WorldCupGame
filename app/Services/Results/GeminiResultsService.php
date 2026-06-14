@@ -1,28 +1,28 @@
 <?php
 
-namespace App\Services\Gemini;
+namespace App\Services\Results;
 
 use App\Models\Fixture;
+use App\Services\Results\Contracts\WorldCupResultsProviderInterface;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use RuntimeException;
 
-final class GeminiResultsService
+final class GeminiResultsService implements WorldCupResultsProviderInterface
 {
     private const API_BASE = 'https://generativelanguage.googleapis.com/v1beta/models';
 
     public function __construct(
         private readonly string $apiKey,
         private readonly string $model,
+        private readonly ResultsResponseParser $parser,
     ) {}
 
     /**
-     * Fetch World Cup results for the given fixtures from Gemini with Search Grounding.
-     *
      * @param  Collection<int, Fixture>  $fixtures
-     * @return array<int, array{home_score: int|null, away_score: int|null, status: string}>
+     * @return array<string, array{home_score: int|null, away_score: int|null, status: string}>
      */
     public function fetchResults(Collection $fixtures): array
     {
@@ -51,7 +51,7 @@ final class GeminiResultsService
         }
 
         $text = (string) data_get($response->json(), 'candidates.0.content.parts.0.text', '');
-        $decoded = json_decode($this->extractJson($text), true);
+        $decoded = json_decode($this->parser->extractJson($text), true);
 
         if (! is_array($decoded)) {
             Log::warning('GeminiResultsService: could not parse JSON response from Gemini', ['response' => $text]);
@@ -59,22 +59,10 @@ final class GeminiResultsService
             return [];
         }
 
-        return collect($decoded)
-            ->keyBy('id')
-            ->map(fn (array $r) => [
-                'home_score' => isset($r['home_score']) && is_int($r['home_score']) ? $r['home_score'] : null,
-                'away_score' => isset($r['away_score']) && is_int($r['away_score']) ? $r['away_score'] : null,
-                'status' => (string) ($r['status'] ?? 'not_started'),
-            ])
-            ->all();
+        return $this->parser->normalise($decoded);
     }
 
-    /**
-     * Fetch raw World Cup results from Gemini without needing fixture data.
-     * Returns the plain text response from Gemini for direct inspection.
-     *
-     * @throws RuntimeException
-     */
+    /** @throws RuntimeException */
     public function fetchRawResults(?string $specificDate = null): string
     {
         $response = Http::post(
@@ -95,15 +83,6 @@ final class GeminiResultsService
         }
 
         return (string) data_get($response->json(), 'candidates.0.content.parts.0.text', '');
-    }
-
-    /** Strip markdown code fences so json_decode can parse the response text cleanly. */
-    private function extractJson(string $text): string
-    {
-        $stripped = preg_replace('/^```(?:json)?\s*/m', '', $text);
-        $stripped = preg_replace('/\s*```\s*$/m', '', (string) $stripped);
-
-        return trim((string) $stripped);
     }
 
     private function buildRawPrompt(?string $specificDate = null): string
@@ -129,7 +108,7 @@ final class GeminiResultsService
             .'Group results by matchday or round. Do not say results are unavailable — search and report what you find.';
     }
 
-    /** @param array<int, array{id: int, home: string, away: string, date: string}> $fixtures */
+    /** @param array<int, array{id: string, home: string, away: string, date: string}> $fixtures */
     private function buildPrompt(array $fixtures): string
     {
         $json = json_encode($fixtures, JSON_PRETTY_PRINT);
@@ -147,7 +126,7 @@ final class GeminiResultsService
 
         Example format:
         [
-          {"id": 1, "home_score": 2, "away_score": 0, "status": "completed"}
+          {"id": "01JXXXXXXXXXXXXXXXXXXXXXXXXX", "home_score": 2, "away_score": 0, "status": "completed"}
         ]
 
         Rules:

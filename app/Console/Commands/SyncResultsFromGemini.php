@@ -5,7 +5,7 @@ namespace App\Console\Commands;
 use App\Enums\FixtureStatus;
 use App\Events\ResultImported;
 use App\Models\Fixture;
-use App\Services\Gemini\GeminiResultsService;
+use App\Services\Results\Contracts\WorldCupResultsProviderInterface;
 use Illuminate\Console\Command;
 use RuntimeException;
 
@@ -19,7 +19,7 @@ final class SyncResultsFromGemini extends Command
 
     protected $description = 'Fetch World Cup 2026 match results from Gemini AI and update fixtures';
 
-    public function __construct(private readonly GeminiResultsService $gemini)
+    public function __construct(private readonly WorldCupResultsProviderInterface $gemini)
     {
         parent::__construct();
     }
