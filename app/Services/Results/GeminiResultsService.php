@@ -122,14 +122,21 @@ final class GeminiResultsService implements WorldCupResultsProviderInterface
         return <<<PROMPT
         You are a sports data assistant. Search for FIFA World Cup 2026 match results.
 
-        Below is a list of matches. For each match, search for the final score if the match has been played, or the current score if it is in progress.
+        Below is a list of matches. For each match, search for the result only if the match is fully over.
 
         Matches:
         {$json}
         {$aliasNote}
 
-        Return ONLY a JSON array for matches that are fully completed (final whistle blown, official result confirmed).
-        Do NOT include matches that are in progress, scheduled but not yet started, or where you are uncertain of the final result.
+        A match is ONLY considered complete when ALL of the following are true:
+        - The full 90 minutes (plus any added time, extra time, or penalties) have been played.
+        - The result is officially confirmed as full-time (FT), after extra time (AET), or after penalties (PEN).
+        - You can find a confirmed final scoreline from a reliable source — not a live or in-progress score.
+        - The match time shown in live sources is NOT a running clock (e.g. 45', 67', 90'+2).
+
+        If there is any doubt — the match is live, the clock is still running, or the result is unconfirmed — DO NOT include it.
+
+        Return ONLY a JSON array for fully completed matches. Omit everything else.
 
         Example format:
         [
@@ -137,9 +144,9 @@ final class GeminiResultsService implements WorldCupResultsProviderInterface
         ]
 
         Rules:
-        - Only include a match if status is "completed" and you have confirmed the final score.
-        - Omit any match that has not yet finished or where the result is unknown.
-        - Only set home_score and away_score to integers for completed matches.
+        - status must be "completed" — never "in_progress", "live", or any other value.
+        - home_score and away_score must be integers of 0 or above (never negative, never null for a completed match).
+        - If a match is ongoing, scheduled, postponed, or the result is uncertain, omit it entirely.
         PROMPT;
     }
 }
