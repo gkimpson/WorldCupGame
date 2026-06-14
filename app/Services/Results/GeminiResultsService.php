@@ -90,25 +90,29 @@ final class GeminiResultsService implements WorldCupResultsProviderInterface
         $today = now()->format('l, F j, Y');
         $aliasNote = $this->parser->buildAliasNote();
 
+        $completionRule = 'Only include a match if it is fully over — '
+            .'the full 90 minutes (plus any added time, extra time, or penalties) have been played '
+            .'and the result is officially confirmed as FT, AET, or PEN. '
+            .'If the match clock is still running, the match is live, or the result is unconfirmed, skip it entirely. '
+            .'For each confirmed completed match output exactly one line in this format: Team1 X - Y Team2 '
+            .'where X and Y are the final scores as whole numbers of 0 or above (never negative, never blank). '
+            .'Do not include any other text, headings, commentary, or explanation — only the result lines. ';
+
         if ($specificDate !== null) {
             $label = Carbon::parse($specificDate)->format('l, F j, Y');
 
             return "Today is {$today}. The FIFA World Cup 2026 is currently underway. "
                 ."Use Google Search to find results ONLY for matches played on {$label} ({$specificDate}). "
                 ."Search for \"FIFA World Cup 2026 results {$specificDate}\" and \"World Cup 2026 scores {$label}\". "
-                .'Return only completed matches. For each match output exactly one line in this format: Team1 X - Y Team2 '
-                .'where X and Y are the final scores as whole numbers of 0 or above (never negative, never blank). '
-                .'Do not include any other text, headings, commentary, or explanation — only the result lines. '
+                .$completionRule
                 .'Do not include matches from any other date. '
                 ."Do not say results are unavailable — search and report what you find.\n{$aliasNote}";
         }
 
         return "Today is {$today}. The FIFA World Cup 2026 is currently underway. "
-            .'Use Google Search to find the latest completed match results right now. '
+            .'Use Google Search to find the latest match results right now. '
             .'Search for "FIFA World Cup 2026 results today" and "World Cup 2026 scores". '
-            .'Return only completed matches. For each match output exactly one line in this format: Team1 X - Y Team2 '
-            .'where X and Y are the final scores as whole numbers of 0 or above (never negative, never blank). '
-            .'Do not include any other text, headings, commentary, or explanation — only the result lines. '
+            .$completionRule
             ."Do not say results are unavailable — search and report what you find.\n{$aliasNote}";
     }
 
