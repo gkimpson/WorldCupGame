@@ -10,11 +10,11 @@ use Throwable;
 
 class SyncResults extends Page
 {
-    protected static ?string $navigationIcon = 'heroicon-o-arrow-path';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-arrow-path';
 
     protected static ?string $navigationLabel = 'AI Sync Results';
 
-    protected static ?string $navigationGroup = 'Competition';
+    protected static \UnitEnum|string|null $navigationGroup = 'Competition';
 
     protected static ?int $navigationSort = 99;
 
