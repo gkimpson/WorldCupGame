@@ -18,7 +18,7 @@ class SyncResults extends Page
 
     protected static ?int $navigationSort = 99;
 
-    protected static string $view = 'filament.pages.sync-results';
+    protected string $view = 'filament.pages.sync-results';
 
     protected function getHeaderActions(): array
     {
