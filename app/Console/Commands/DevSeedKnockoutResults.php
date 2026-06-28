@@ -310,48 +310,52 @@ class DevSeedKnockoutResults extends Command
         $drawScores = [[0, 0], [1, 1], [2, 2]];
         $penScores = [[4, 2], [4, 3], [5, 3], [5, 4]];
 
+        $nd = $nonDrawScores[array_rand($nonDrawScores)];
+        $d = $drawScores[array_rand($drawScores)];
+        $p = $penScores[array_rand($penScores)];
+
         return match ($outcome) {
             KnockoutOutcome::HomeWin => [
                 ...$base,
-                'home_score' => $nonDrawScores[array_rand($nonDrawScores)][0],
-                'away_score' => $nonDrawScores[array_rand($nonDrawScores)][1],
+                'home_score' => $nd[0],
+                'away_score' => $nd[1],
             ],
             KnockoutOutcome::AwayWin => [
                 ...$base,
-                'home_score' => $nonDrawScores[array_rand($nonDrawScores)][1],
-                'away_score' => $nonDrawScores[array_rand($nonDrawScores)][0],
+                'home_score' => $nd[1],
+                'away_score' => $nd[0],
             ],
             KnockoutOutcome::HomeWinAet => [
-                'home_score' => $drawScores[array_rand($drawScores)][0],
-                'away_score' => $drawScores[array_rand($drawScores)][1],
+                'home_score' => $d[0],
+                'away_score' => $d[1],
                 'home_score_aet' => $nonDrawScores[array_rand($nonDrawScores)][0],
                 'away_score_aet' => $nonDrawScores[array_rand($nonDrawScores)][1],
                 'home_score_pens' => null,
                 'away_score_pens' => null,
             ],
             KnockoutOutcome::AwayWinAet => [
-                'home_score' => $drawScores[array_rand($drawScores)][0],
-                'away_score' => $drawScores[array_rand($drawScores)][1],
+                'home_score' => $d[0],
+                'away_score' => $d[1],
                 'home_score_aet' => $nonDrawScores[array_rand($nonDrawScores)][1],
                 'away_score_aet' => $nonDrawScores[array_rand($nonDrawScores)][0],
                 'home_score_pens' => null,
                 'away_score_pens' => null,
             ],
             KnockoutOutcome::HomeWinPens => [
-                'home_score' => $drawScores[array_rand($drawScores)][0],
-                'away_score' => $drawScores[array_rand($drawScores)][1],
-                'home_score_aet' => $drawScores[array_rand($drawScores)][0],
-                'away_score_aet' => $drawScores[array_rand($drawScores)][1],
-                'home_score_pens' => $penScores[array_rand($penScores)][0],
-                'away_score_pens' => $penScores[array_rand($penScores)][1],
+                'home_score' => $d[0],
+                'away_score' => $d[1],
+                'home_score_aet' => $d[0],
+                'away_score_aet' => $d[1],
+                'home_score_pens' => $p[0],
+                'away_score_pens' => $p[1],
             ],
             KnockoutOutcome::AwayWinPens => [
-                'home_score' => $drawScores[array_rand($drawScores)][0],
-                'away_score' => $drawScores[array_rand($drawScores)][1],
-                'home_score_aet' => $drawScores[array_rand($drawScores)][0],
-                'away_score_aet' => $drawScores[array_rand($drawScores)][1],
-                'home_score_pens' => $penScores[array_rand($penScores)][1],
-                'away_score_pens' => $penScores[array_rand($penScores)][0],
+                'home_score' => $d[0],
+                'away_score' => $d[1],
+                'home_score_aet' => $d[0],
+                'away_score_aet' => $d[1],
+                'home_score_pens' => $p[1],
+                'away_score_pens' => $p[0],
             ],
         };
     }
