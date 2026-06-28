@@ -40,7 +40,7 @@ final class ResultsResponseParser
      * Map a raw decoded array to the canonical result shape, keyed by fixture id.
      *
      * @param  array<int, array<string, mixed>>  $decoded
-     * @return array<int, array{home_score: int|null, away_score: int|null, status: string}>
+     * @return array<int, array{home_score: int|null, away_score: int|null, home_score_aet: int|null, away_score_aet: int|null, home_score_pens: int|null, away_score_pens: int|null, status: string}>
      */
     public function normalise(array $decoded): array
     {
@@ -49,6 +49,10 @@ final class ResultsResponseParser
             ->map(fn (array $r) => [
                 'home_score' => isset($r['home_score']) && is_int($r['home_score']) ? $r['home_score'] : null,
                 'away_score' => isset($r['away_score']) && is_int($r['away_score']) ? $r['away_score'] : null,
+                'home_score_aet' => isset($r['home_score_aet']) && is_int($r['home_score_aet']) ? $r['home_score_aet'] : null,
+                'away_score_aet' => isset($r['away_score_aet']) && is_int($r['away_score_aet']) ? $r['away_score_aet'] : null,
+                'home_score_pens' => isset($r['home_score_pens']) && is_int($r['home_score_pens']) ? $r['home_score_pens'] : null,
+                'away_score_pens' => isset($r['away_score_pens']) && is_int($r['away_score_pens']) ? $r['away_score_pens'] : null,
                 'status' => (string) ($r['status'] ?? 'not_started'),
             ])
             ->all();

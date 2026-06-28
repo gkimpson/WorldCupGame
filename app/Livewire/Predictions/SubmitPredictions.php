@@ -16,7 +16,7 @@ use Livewire\Component;
 #[Title('My Predictions')]
 class SubmitPredictions extends Component
 {
-    /** @var array<int, array{home: string, away: string}> */
+    /** @var array<int, array{home: string, away: string, knockout_outcome: string}> */
     public array $scores = [];
 
     /** @var array<int, bool> */
@@ -33,17 +33,18 @@ class SubmitPredictions extends Component
         $fixtureIds = Fixture::orderBy('scheduled_at')->orderBy('id')->pluck('id');
 
         foreach ($fixtureIds as $id) {
-            $this->scores[$id] = ['home' => '', 'away' => ''];
+            $this->scores[$id] = ['home' => '', 'away' => '', 'knockout_outcome' => ''];
         }
 
         if ($user instanceof User) {
             Prediction::where('user_id', $user->id)
                 ->whereIn('fixture_id', $fixtureIds)
-                ->get(['fixture_id', 'home_score', 'away_score'])
+                ->get(['fixture_id', 'home_score', 'away_score', 'knockout_outcome'])
                 ->each(function (Prediction $p): void {
                     $this->scores[$p->fixture_id] = [
                         'home' => (string) $p->home_score,
                         'away' => (string) $p->away_score,
+                        'knockout_outcome' => $p->knockout_outcome?->value ?? '',
                     ];
                 });
         }
@@ -67,11 +68,30 @@ class SubmitPredictions extends Component
             "scores.{$fixtureId}.away" => ['required', 'integer', 'min:0', 'max:20'],
         ]);
 
+        $home = (int) $this->scores[$fixtureId]['home'];
+        $away = (int) $this->scores[$fixtureId]['away'];
+        $knockoutOutcome = null;
+
+        if ($fixture->stage->isKnockout()) {
+            if ($home === $away) {
+                $this->validate([
+                    "scores.{$fixtureId}.knockout_outcome" => [
+                        'required',
+                        'in:home_win_aet,away_win_aet,home_win_pens,away_win_pens',
+                    ],
+                ]);
+                $knockoutOutcome = $this->scores[$fixtureId]['knockout_outcome'];
+            } else {
+                $knockoutOutcome = $home > $away ? 'home_win' : 'away_win';
+            }
+        }
+
         Prediction::updateOrCreate(
             ['user_id' => $user->id, 'fixture_id' => $fixtureId],
             [
-                'home_score' => (int) $this->scores[$fixtureId]['home'],
-                'away_score' => (int) $this->scores[$fixtureId]['away'],
+                'home_score' => $home,
+                'away_score' => $away,
+                'knockout_outcome' => $knockoutOutcome,
             ],
         );
 
@@ -94,10 +114,10 @@ class SubmitPredictions extends Component
 
         Fixture::whereIn('id', array_keys($this->scores))
             ->where('status', FixtureStatus::Scheduled)
-            ->get(['id', 'scheduled_at', 'is_locked'])
+            ->get(['id', 'stage', 'scheduled_at', 'is_locked'])
             ->reject(fn (Fixture $f): bool => $f->isLocked())
-            ->pluck('id')
-            ->each(function (int $fixtureId) use ($user, &$saved): void {
+            ->each(function (Fixture $fixture) use ($user, &$saved): void {
+                $fixtureId = $fixture->id;
                 $home = $this->scores[$fixtureId]['home'] ?? '';
                 $away = $this->scores[$fixtureId]['away'] ?? '';
 
@@ -105,9 +125,28 @@ class SubmitPredictions extends Component
                     return;
                 }
 
+                $homeScore = (int) $home;
+                $awayScore = (int) $away;
+                $knockoutOutcome = null;
+
+                if ($fixture->stage->isKnockout()) {
+                    if ($homeScore === $awayScore) {
+                        $knockoutOutcome = $this->scores[$fixtureId]['knockout_outcome'] ?? '';
+                        if (! in_array($knockoutOutcome, ['home_win_aet', 'away_win_aet', 'home_win_pens', 'away_win_pens'], true)) {
+                            return;
+                        }
+                    } else {
+                        $knockoutOutcome = $homeScore > $awayScore ? 'home_win' : 'away_win';
+                    }
+                }
+
                 Prediction::updateOrCreate(
                     ['user_id' => $user->id, 'fixture_id' => $fixtureId],
-                    ['home_score' => (int) $home, 'away_score' => (int) $away],
+                    [
+                        'home_score' => $homeScore,
+                        'away_score' => $awayScore,
+                        'knockout_outcome' => $knockoutOutcome,
+                    ],
                 );
 
                 $saved++;

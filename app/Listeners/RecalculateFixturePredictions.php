@@ -25,7 +25,12 @@ class RecalculateFixturePredictions implements ShouldQueue
         Prediction::where('fixture_id', $fixture->id)
             ->chunkById(200, function (Collection $predictions) use ($fixture): void {
                 foreach ($predictions as $prediction) {
-                    $result = $this->scorer->score($fixture, $prediction->home_score, $prediction->away_score);
+                    $result = $this->scorer->score(
+                        $fixture,
+                        $prediction->home_score,
+                        $prediction->away_score,
+                        $prediction->knockout_outcome,
+                    );
                     $prediction->points = $result->isScored() ? $result->points : null;
                     $prediction->save();
                 }

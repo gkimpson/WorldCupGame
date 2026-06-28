@@ -141,6 +141,10 @@ final class SyncResults extends Command
             $fixture->update([
                 'home_score' => $result['home_score'],
                 'away_score' => $result['away_score'],
+                'home_score_aet' => $result['home_score_aet'],
+                'away_score_aet' => $result['away_score_aet'],
+                'home_score_pens' => $result['home_score_pens'],
+                'away_score_pens' => $result['away_score_pens'],
                 'status' => FixtureStatus::Completed,
             ]);
 
@@ -178,11 +182,15 @@ final class SyncResults extends Command
             ($ht = $fixture->homeTeam) !== null ? $ht->name : ($fixture->home_team_placeholder ?? 'TBD'),
             $results[$fixture->id]['home_score'] ?? 'null',
             $results[$fixture->id]['away_score'] ?? 'null',
+            $results[$fixture->id]['home_score_aet'] ?? '—',
+            $results[$fixture->id]['away_score_aet'] ?? '—',
+            $results[$fixture->id]['home_score_pens'] ?? '—',
+            $results[$fixture->id]['away_score_pens'] ?? '—',
             ($at = $fixture->awayTeam) !== null ? $at->name : ($fixture->away_team_placeholder ?? 'TBD'),
             $results[$fixture->id]['status'] ?? 'no result',
         ], $fixtures);
 
-        $this->table(['Fixture ID', 'Home Team', 'Home Score', 'Away Score', 'Away Team', 'Status'], $providerRows);
+        $this->table(['Fixture ID', 'Home Team', 'H', 'A', 'H AET', 'A AET', 'H Pens', 'A Pens', 'Away Team', 'Status'], $providerRows);
 
         $this->newLine();
         $this->comment('=== WOULD BE WRITTEN TO fixtures TABLE ===');
@@ -200,7 +208,7 @@ final class SyncResults extends Command
                 || $result['home_score'] === null
                 || $result['away_score'] === null
             ) {
-                $writeRows[] = [$fixture->id, $homeName, $awayName, '-', '-', 'skipped — '.($result['status'] ?? 'no result')];
+                $writeRows[] = [$fixture->id, $homeName, $awayName, '-', '-', '—', '—', '—', '—', 'skipped — '.($result['status'] ?? 'no result')];
 
                 continue;
             }
@@ -211,11 +219,15 @@ final class SyncResults extends Command
                 $awayName,
                 $result['home_score'],
                 $result['away_score'],
+                $result['home_score_aet'] ?? '—',
+                $result['away_score_aet'] ?? '—',
+                $result['home_score_pens'] ?? '—',
+                $result['away_score_pens'] ?? '—',
                 'would update',
             ];
         }
 
-        $this->table(['Fixture ID', 'Home', 'Away', 'home_score', 'away_score', 'Action'], $writeRows);
+        $this->table(['Fixture ID', 'Home', 'Away', 'H', 'A', 'H AET', 'A AET', 'H Pens', 'A Pens', 'Action'], $writeRows);
         $this->newLine();
     }
 }

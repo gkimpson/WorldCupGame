@@ -70,13 +70,47 @@ class FixtureResource extends Resource
                             ->numeric()
                             ->minValue(0)
                             ->required(),
+                        TextInput::make('home_score_aet')
+                            ->label('Home Score (AET)')
+                            ->numeric()
+                            ->minValue(0)
+                            ->nullable()
+                            ->helperText('Only fill if match went beyond 90 minutes'),
+                        TextInput::make('away_score_aet')
+                            ->label('Away Score (AET)')
+                            ->numeric()
+                            ->minValue(0)
+                            ->nullable(),
+                        TextInput::make('home_score_pens')
+                            ->label('Home Penalties')
+                            ->numeric()
+                            ->minValue(0)
+                            ->nullable()
+                            ->helperText('Only fill if match went to penalties'),
+                        TextInput::make('away_score_pens')
+                            ->label('Away Penalties')
+                            ->numeric()
+                            ->minValue(0)
+                            ->nullable(),
                     ])
                     ->action(function (Fixture $record, array $data): void {
-                        $record->update([
+                        $updateData = [
                             'home_score' => $data['home_score'],
                             'away_score' => $data['away_score'],
                             'status' => FixtureStatus::Completed,
-                        ]);
+                        ];
+
+                        if ($data['home_score_aet'] !== null || $data['away_score_aet'] !== null) {
+                            $updateData['home_score_aet'] = $data['home_score_aet'];
+                            $updateData['away_score_aet'] = $data['away_score_aet'];
+                        }
+
+                        if ($data['home_score_pens'] !== null || $data['away_score_pens'] !== null) {
+                            $updateData['home_score_pens'] = $data['home_score_pens'];
+                            $updateData['away_score_pens'] = $data['away_score_pens'];
+                        }
+
+                        $record->update($updateData);
 
                         ResultImported::dispatch($record->fresh());
                     }),

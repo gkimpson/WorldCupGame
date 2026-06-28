@@ -15,9 +15,11 @@
                                 $locked = $fixture->isLocked();
                                 $homeName = $fixture->homeTeam?->name ?? $fixture->home_team_placeholder ?? 'TBD';
                                 $awayName = $fixture->awayTeam?->name ?? $fixture->away_team_placeholder ?? 'TBD';
+                                $isKnockout = $fixture->stage->isKnockout();
                             @endphp
 
-                            <div wire:key="fixture-{{ $fixture->id }}" class="flex flex-col gap-2 px-4 py-3 sm:grid sm:grid-cols-[4rem_minmax(0,1fr)_1.25rem_auto_1.25rem_minmax(0,1fr)_5rem] sm:items-center sm:gap-3 {{ $locked ? 'opacity-50' : '' }}">
+                            <div wire:key="fixture-{{ $fixture->id }}" class="flex flex-col gap-0 {{ $locked ? 'opacity-50' : '' }}">
+                                <div class="flex flex-col gap-2 px-4 py-3 sm:grid sm:grid-cols-[4rem_minmax(0,1fr)_1.25rem_auto_1.25rem_minmax(0,1fr)_5rem] sm:items-center sm:gap-3">
                                 {{-- Date (desktop only) --}}
                                 <div class="hidden sm:flex sm:flex-col sm:items-start">
                                     @if ($fixture->scheduled_at !== null)
@@ -114,6 +116,44 @@
                                         @endif
                                     @endif
                                 </div>
+                                </div>
+
+                                {{-- Knockout outcome selector --}}
+                                @if ($isKnockout && !$locked)
+                                    <div x-data="{
+                                        home: $wire.entangle('scores.{{ $fixture->id }}.home'),
+                                        away: $wire.entangle('scores.{{ $fixture->id }}.away'),
+                                        outcome: $wire.entangle('scores.{{ $fixture->id }}.knockout_outcome')
+                                    }" class="border-t border-zinc-100 px-4 py-3 dark:border-zinc-700">
+                                        {{-- Non-draw: show inferred outcome label --}}
+                                        <template x-if="home !== '' && away !== '' && home !== away">
+                                            <flux:text class="text-sm text-zinc-500">
+                                                <span x-text="Number(home) > Number(away) ? '{{ $homeName }} win in normal time' : '{{ $awayName }} win in normal time'"></span>
+                                            </flux:text>
+                                        </template>
+
+                                        {{-- Draw: show resolution selector --}}
+                                        <template x-if="home !== '' && away !== '' && home === away">
+                                            <div class="flex flex-col gap-2">
+                                                <flux:text class="text-sm font-medium">How does it end?</flux:text>
+                                                <div class="space-y-1.5">
+                                                    <flux:radio x-model="outcome" value="home_win_aet" wire:change="$refresh">
+                                                        {{ $homeName }} win after extra time
+                                                    </flux:radio>
+                                                    <flux:radio x-model="outcome" value="away_win_aet" wire:change="$refresh">
+                                                        {{ $awayName }} win after extra time
+                                                    </flux:radio>
+                                                    <flux:radio x-model="outcome" value="home_win_pens" wire:change="$refresh">
+                                                        {{ $homeName }} win on penalties
+                                                    </flux:radio>
+                                                    <flux:radio x-model="outcome" value="away_win_pens" wire:change="$refresh">
+                                                        {{ $awayName }} win on penalties
+                                                    </flux:radio>
+                                                </div>
+                                            </div>
+                                        </template>
+                                    </div>
+                                @endif
                             </div>
                         @endforeach
                     </div>

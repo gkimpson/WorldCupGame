@@ -43,6 +43,7 @@ class KnockoutRound32Seeder extends Seeder
 
             if (! $homeTeam || ! $awayTeam) {
                 $this->command->warn("Teams not found for {$matchup['home']} vs {$matchup['away']}");
+
                 continue;
             }
 

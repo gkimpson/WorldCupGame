@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\KnockoutOutcome;
 use App\Enums\PredictionOutcome;
 use Database\Factories\PredictionFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
@@ -22,7 +23,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int|null $correct_outcomes
  * @property int|null $exact_scores
  */
-#[Fillable(['user_id', 'fixture_id', 'home_score', 'away_score', 'points'])]
+#[Fillable(['user_id', 'fixture_id', 'home_score', 'away_score', 'knockout_outcome', 'points'])]
 class Prediction extends Model
 {
     /** @use HasFactory<PredictionFactory> */
@@ -36,6 +37,7 @@ class Prediction extends Model
         return [
             'home_score' => 'integer',
             'away_score' => 'integer',
+            'knockout_outcome' => KnockoutOutcome::class,
             'points' => 'integer',
         ];
     }

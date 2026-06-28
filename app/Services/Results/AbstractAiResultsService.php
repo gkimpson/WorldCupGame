@@ -78,12 +78,23 @@ abstract class AbstractAiResultsService implements WorldCupResultsProviderInterf
 
         Example format:
         [
-          {"id": "01JXXXXXXXXXXXXXXXXXXXXXXXXX", "home_score": 2, "away_score": 0, "status": "completed"}
+          {
+            "id": "01JXXXXXXXXXXXXXXXXXXXXXXXXX",
+            "home_score": 1,
+            "away_score": 1,
+            "home_score_aet": 1,
+            "away_score_aet": 2,
+            "home_score_pens": null,
+            "away_score_pens": null,
+            "status": "completed"
+          }
         ]
 
         Rules:
         - status must be "completed" — never "in_progress", "live", or any other value.
-        - home_score and away_score must be integers of 0 or above (never negative, never null for a completed match).
+        - home_score and away_score are the scores at exactly 90 minutes (including stoppage time, never AET), must be integers 0 or above.
+        - home_score_aet and away_score_aet are the scores at end of extra time if the match went to AET; otherwise null. Only used for knockout rounds.
+        - home_score_pens and away_score_pens are the number of penalties scored if the match went to a penalty shootout; otherwise null. Only used for knockout rounds.
         - If a match is ongoing, scheduled, postponed, or the result is uncertain, omit it entirely.
         PROMPT;
     }

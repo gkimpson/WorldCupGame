@@ -65,7 +65,7 @@ it('scores draws as an outcome', function () {
         ->and($score->actualOutcome)->toBe(FixtureOutcome::Draw);
 });
 
-it('uses extra-time scores as the settled score', function () {
+it('uses extra-time scores for outcome determination but 90-min scores for exact score check', function () {
     $score = (new FixturePredictionScorer)->score(scoringFixture([
         'stage' => FixtureStage::RoundOf16,
         'home_score' => 1,
@@ -74,8 +74,9 @@ it('uses extra-time scores as the settled score', function () {
         'away_score_aet' => 1,
     ]), 2, 1);
 
-    expect($score->points)->toBe(3)
-        ->and($score->exactScore)->toBeTrue()
+    expect($score->points)->toBe(1)
+        ->and($score->exactScore)->toBeFalse()
+        ->and($score->correctOutcome)->toBeTrue()
         ->and($score->actualOutcome)->toBe(FixtureOutcome::HomeWin);
 });
 

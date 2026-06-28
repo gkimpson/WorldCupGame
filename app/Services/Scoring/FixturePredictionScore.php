@@ -12,6 +12,7 @@ class FixturePredictionScore
         public bool $correctOutcome,
         public FixtureOutcome $predictedOutcome,
         public ?FixtureOutcome $actualOutcome,
+        public bool $knockoutMethodCorrect = false,
         public ?string $reason = null,
     ) {}
 
