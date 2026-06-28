@@ -138,22 +138,25 @@
                                                 <div class="text-sm font-medium text-zinc-700 dark:text-zinc-300">Match tied at 90 mins. Who wins?</div>
                                                 <div class="flex flex-wrap justify-center gap-3 sm:gap-2">
                                                     <label class="flex items-center gap-2 cursor-pointer">
-                                                        <input type="radio" x-model="outcome" value="home_win_aet" class="w-4 h-4" />
+                                                        <input type="radio" x-model="outcome" value="home_win_aet" name="knockout_outcome_{{ $fixture->id }}" class="w-4 h-4" />
                                                         <span class="text-xs sm:text-sm text-zinc-600 dark:text-zinc-300">{{ $homeName }} (AET)</span>
                                                     </label>
                                                     <label class="flex items-center gap-2 cursor-pointer">
-                                                        <input type="radio" x-model="outcome" value="away_win_aet" class="w-4 h-4" />
+                                                        <input type="radio" x-model="outcome" value="away_win_aet" name="knockout_outcome_{{ $fixture->id }}" class="w-4 h-4" />
                                                         <span class="text-xs sm:text-sm text-zinc-600 dark:text-zinc-300">{{ $awayName }} (AET)</span>
                                                     </label>
                                                     <label class="flex items-center gap-2 cursor-pointer">
-                                                        <input type="radio" x-model="outcome" value="home_win_pens" class="w-4 h-4" />
+                                                        <input type="radio" x-model="outcome" value="home_win_pens" name="knockout_outcome_{{ $fixture->id }}" class="w-4 h-4" />
                                                         <span class="text-xs sm:text-sm text-zinc-600 dark:text-zinc-300">{{ $homeName }} (Pens)</span>
                                                     </label>
                                                     <label class="flex items-center gap-2 cursor-pointer">
-                                                        <input type="radio" x-model="outcome" value="away_win_pens" class="w-4 h-4" />
+                                                        <input type="radio" x-model="outcome" value="away_win_pens" name="knockout_outcome_{{ $fixture->id }}" class="w-4 h-4" />
                                                         <span class="text-xs sm:text-sm text-zinc-600 dark:text-zinc-300">{{ $awayName }} (Pens)</span>
                                                     </label>
                                                 </div>
+                                                @error("scores.{$fixture->id}.knockout_outcome")
+                                                    <flux:error class="text-xs">{{ $message }}</flux:error>
+                                                @enderror
                                             </div>
                                         </template>
                                     </div>
