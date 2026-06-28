@@ -23,9 +23,32 @@ npm run build         # Production asset build
 php artisan test --compact --filter=testName   # Run a single test by name
 php artisan test --compact tests/Feature/X.php # Run a single test file
 vendor/bin/pint --dirty --format agent         # Format only changed files (run before finalizing PHP changes)
+
+# Dev commands (knockout testing)
+php artisan dev:seed-knockout-results --stage=round_of_32               # Seed random knockout results for a stage
+php artisan dev:seed-knockout-results --stage=round_of_32 --dry-run     # Preview without persisting
+php artisan dev:seed-knockout-results --stage=all                       # Seed all knockout stages in order
+php artisan dev:seed-knockout-results --stage=round_of_32 --reset       # Clear results and reset to Scheduled
+php artisan dev:seed-knockout-results --stage=all --reset               # Reset all knockout stages (reverse order)
 ```
 
 There is no `npm test`; all tests are PHP/Pest. The DB is **MySQL** (`DB_CONNECTION=mysql` in `.env`) served via Laravel Herd at `https://worldcup-104-0-0.test`.
+
+### Dev Knockout Results Seeder
+
+**`dev:seed-knockout-results`** simulates knockout match results with a realistic distribution of outcome types and automatically advances winners to the next round. Use this during development to test the knockout prediction/scoring flow.
+
+**Seed mode (default):**
+- Randomly generates results for all fixtures in a stage, distributing equally across 6 outcome types: `HomeWin`, `AwayWin`, `HomeWinAet`, `AwayWinAet`, `HomeWinPens`, `AwayWinPens`.
+- Fires `ResultImported` event synchronously, so points recalculate immediately.
+- Automatically advances winners (and losers, for `third_place`) into downstream fixture team slots using the bracket placeholder strings (e.g. `"Winner Match 73"`).
+- Use `--stage=all` to seed all knockouts in order (round_of_32 → round_of_16 → ... → final).
+- Use `--dry-run` to preview changes without persisting to the database.
+
+**Reset mode (`--reset`):**
+- Clears all scores (home/away/AET/pens), nulls `points` on predictions, and reverts fixture status to `Scheduled`.
+- **Also clears downstream fixtures** that reference the reset stage's match numbers — ensuring the bracket remains consistent.
+- When resetting all stages with `--reset --stage=all`, processes in reverse order (final → ... → round_of_32) so downstream clears before upstream.
 
 ## Architecture
 

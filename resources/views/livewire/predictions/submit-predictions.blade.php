@@ -127,28 +127,32 @@
                                     }" class="border-t border-zinc-100 px-4 py-3 dark:border-zinc-700">
                                         {{-- Non-draw: show inferred outcome label --}}
                                         <template x-if="home !== '' && away !== '' && home !== away">
-                                            <flux:text class="text-sm text-zinc-500">
+                                            <div class="text-center text-sm text-zinc-500">
                                                 <span x-text="Number(home) > Number(away) ? '{{ $homeName }} win in normal time' : '{{ $awayName }} win in normal time'"></span>
-                                            </flux:text>
+                                            </div>
                                         </template>
 
                                         {{-- Draw: show resolution selector --}}
                                         <template x-if="home !== '' && away !== '' && home === away">
-                                            <div class="flex flex-col gap-2">
-                                                <flux:text class="text-sm font-medium">How does it end?</flux:text>
-                                                <div class="space-y-1.5">
-                                                    <flux:radio x-model="outcome" value="home_win_aet" wire:change="$refresh">
-                                                        {{ $homeName }} win after extra time
-                                                    </flux:radio>
-                                                    <flux:radio x-model="outcome" value="away_win_aet" wire:change="$refresh">
-                                                        {{ $awayName }} win after extra time
-                                                    </flux:radio>
-                                                    <flux:radio x-model="outcome" value="home_win_pens" wire:change="$refresh">
-                                                        {{ $homeName }} win on penalties
-                                                    </flux:radio>
-                                                    <flux:radio x-model="outcome" value="away_win_pens" wire:change="$refresh">
-                                                        {{ $awayName }} win on penalties
-                                                    </flux:radio>
+                                            <div class="flex flex-col items-center gap-3">
+                                                <div class="text-sm font-medium text-zinc-700 dark:text-zinc-300">Match tied at 90 mins. Who wins?</div>
+                                                <div class="flex flex-wrap justify-center gap-3 sm:gap-2">
+                                                    <label class="flex items-center gap-2 cursor-pointer">
+                                                        <input type="radio" x-model="outcome" value="home_win_aet" wire:change="$refresh" class="w-4 h-4" />
+                                                        <span class="text-xs sm:text-sm text-zinc-600 dark:text-zinc-300">{{ $homeName }} (AET)</span>
+                                                    </label>
+                                                    <label class="flex items-center gap-2 cursor-pointer">
+                                                        <input type="radio" x-model="outcome" value="away_win_aet" wire:change="$refresh" class="w-4 h-4" />
+                                                        <span class="text-xs sm:text-sm text-zinc-600 dark:text-zinc-300">{{ $awayName }} (AET)</span>
+                                                    </label>
+                                                    <label class="flex items-center gap-2 cursor-pointer">
+                                                        <input type="radio" x-model="outcome" value="home_win_pens" wire:change="$refresh" class="w-4 h-4" />
+                                                        <span class="text-xs sm:text-sm text-zinc-600 dark:text-zinc-300">{{ $homeName }} (Pens)</span>
+                                                    </label>
+                                                    <label class="flex items-center gap-2 cursor-pointer">
+                                                        <input type="radio" x-model="outcome" value="away_win_pens" wire:change="$refresh" class="w-4 h-4" />
+                                                        <span class="text-xs sm:text-sm text-zinc-600 dark:text-zinc-300">{{ $awayName }} (Pens)</span>
+                                                    </label>
                                                 </div>
                                             </div>
                                         </template>
