@@ -102,7 +102,6 @@ class Fixture extends Model
 
     public function isLocked(): bool
     {
-        return false;
         if ($this->is_locked) {
             return true;
         }
