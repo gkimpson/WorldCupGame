@@ -24,7 +24,7 @@
                                 <div class="hidden sm:flex sm:flex-col sm:items-start">
                                     @if ($fixture->scheduled_at !== null)
                                         <flux:link :href="route('fixtures.show', $fixture)" wire:navigate class="text-xs leading-tight text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300">
-                                            {{ $fixture->scheduled_at->format('d M') }}<br>{{ $fixture->scheduled_at->format('H:i') }}
+                                            <x-fixture-kickoff :fixture="$fixture" split />
                                         </flux:link>
                                     @endif
                                 </div>

@@ -44,11 +44,7 @@
                                     <span class="font-medium text-zinc-700 dark:text-zinc-300">{{ __('Match :number', ['number' => $fixture->match_number]) }}</span>
                                 @endif
 
-                                @if($fixture->scheduled_at !== null)
-                                    <span class="md:mt-1 md:block">{{ $fixture->scheduled_at->format('d M H:i') }}</span>
-                                @else
-                                    <span class="md:mt-1 md:block">{{ __('TBD') }}</span>
-                                @endif
+                                <x-fixture-kickoff :fixture="$fixture" :year="false" class="md:mt-1 md:block" />
                             </div>
 
                             <div class="flex min-w-0 items-center gap-2 md:justify-end">

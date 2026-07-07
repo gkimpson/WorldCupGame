@@ -44,7 +44,7 @@
             <div>
                 <flux:text class="text-zinc-500">{{ __('Kickoff') }}</flux:text>
                 <div class="mt-1 font-medium">
-                    {{ $fixture->scheduled_at?->format('D d M Y, H:i') ?? __('TBD') }}
+                    <x-fixture-kickoff :fixture="$fixture" weekday />
                 </div>
             </div>
 
